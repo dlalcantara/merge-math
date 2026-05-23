@@ -1,0 +1,270 @@
+:root {
+  --color-cell-bg: #2a2a3e;
+  --color-selected: #4a9eff;
+  --color-operator-active: #f59e0b;
+  --color-disabled: #555;
+  --color-target: #10b981;
+  --spacing-sm: 0.25rem;
+  --spacing-md: 0.5rem;
+  --spacing-lg: 1rem;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #13131f;
+  color: #e0e0f0;
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: var(--spacing-lg);
+}
+
+#root {
+  width: 100%;
+  max-width: 480px;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-align: center;
+}
+
+h2 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9999bb;
+  margin-bottom: var(--spacing-sm);
+}
+
+/* Score */
+.score {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-target);
+  text-align: center;
+}
+
+/* Game board layout */
+.game-board {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* Grid */
+.grid {
+  display: grid;
+  gap: var(--spacing-sm);
+}
+
+.cell {
+  background: var(--color-cell-bg);
+  color: #e0e0f0;
+  border: 2px solid #3a3a55;
+  border-radius: 8px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  aspect-ratio: 1;
+  width: 100%;
+  transition: background 0.1s, border-color 0.1s, outline 0.1s;
+}
+
+.cell:focus-visible {
+  outline: 3px solid var(--color-selected);
+  outline-offset: 2px;
+}
+
+.cell--selected {
+  background: #1a3a5c;
+  border-color: var(--color-selected);
+  box-shadow: 0 0 0 2px var(--color-selected);
+}
+
+.cell--empty {
+  cursor: default;
+  opacity: 0.4;
+}
+
+/* Operator selector */
+.operator-selector {
+  border: none;
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: center;
+}
+
+.operator-btn {
+  background: var(--color-cell-bg);
+  color: #e0e0f0;
+  border: 2px solid #3a3a55;
+  border-radius: 8px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  width: 3rem;
+  height: 3rem;
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s;
+}
+
+.operator-btn:focus-visible {
+  outline: 3px solid var(--color-selected);
+  outline-offset: 2px;
+}
+
+.operator-btn--active {
+  background: #3d2e00;
+  border-color: var(--color-operator-active);
+  color: var(--color-operator-active);
+  box-shadow: 0 0 0 2px var(--color-operator-active);
+}
+
+/* Target list */
+.target-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.target-list li button {
+  background: var(--color-cell-bg);
+  color: var(--color-target);
+  border: 2px solid var(--color-target);
+  border-radius: 6px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.target-list li button:hover {
+  background: #0d3028;
+}
+
+.target-list li button:focus-visible {
+  outline: 3px solid var(--color-selected);
+  outline-offset: 2px;
+}
+
+/* Action buttons */
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.action-buttons button {
+  background: #22223a;
+  color: #e0e0f0;
+  border: 2px solid #4a4a6a;
+  border-radius: 8px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s;
+}
+
+.action-buttons button:hover:not(:disabled) {
+  background: #2e2e4e;
+  border-color: #7070aa;
+}
+
+.action-buttons button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.action-buttons button:focus-visible {
+  outline: 3px solid var(--color-selected);
+  outline-offset: 2px;
+}
+
+/* Win modal */
+.win-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 20, 0.85);
+  backdrop-filter: blur(4px);
+  border: 2px solid var(--color-target);
+  border-radius: 16px;
+  color: #e0e0f0;
+  max-width: 360px;
+  width: 90%;
+  margin: auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  align-items: center;
+  text-align: center;
+}
+
+.win-modal::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.win-modal h2 {
+  font-size: 2rem;
+  color: var(--color-target);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.win-modal button {
+  background: var(--color-target);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: var(--spacing-md) 1.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.win-modal button:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* Screen reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Responsive — narrow viewport */
+@media (max-width: 600px) {
+  body {
+    padding: var(--spacing-md);
+  }
+  h1 {
+    font-size: 1.4rem;
+  }
+}
