@@ -203,3 +203,38 @@ describe('MERGE_CELLS', () => {
     expect(next.current.selectedNumbersIdx).toBeNull()
   })
 })
+
+describe('SELECT_CELL mutual exclusivity', () => {
+  it('SELECT_CELL numbers clears selectedGeneratorsIdx', () => {
+    const store = makeStore({
+      numbersGrid: [5, null, null, null, null, null, null, null, null],
+      generatorsGrid: [1, null, null, null],
+      selectedGeneratorsIdx: 0,
+    })
+    const next = gameReducer(store, { type: 'SELECT_CELL', grid: 'numbers', cellIdx: 0 })
+    expect(next.current.selectedNumbersIdx).toBe(0)
+    expect(next.current.selectedGeneratorsIdx).toBeNull()
+  })
+
+  it('SELECT_CELL generators clears selectedNumbersIdx', () => {
+    const store = makeStore({
+      numbersGrid: [5, null, null, null, null, null, null, null, null],
+      generatorsGrid: [1, null, null, null],
+      selectedNumbersIdx: 0,
+    })
+    const next = gameReducer(store, { type: 'SELECT_CELL', grid: 'generators', cellIdx: 0 })
+    expect(next.current.selectedGeneratorsIdx).toBe(0)
+    expect(next.current.selectedNumbersIdx).toBeNull()
+  })
+
+  it('DESELECT_ALL sets both selection fields to null', () => {
+    const store = makeStore({
+      numbersGrid: [5, null, null, null, null, null, null, null, null],
+      generatorsGrid: [1, null, null, null],
+      selectedNumbersIdx: 0,
+    })
+    const next = gameReducer(store, { type: 'DESELECT_ALL' })
+    expect(next.current.selectedNumbersIdx).toBeNull()
+    expect(next.current.selectedGeneratorsIdx).toBeNull()
+  })
+})

@@ -97,6 +97,89 @@ describe('US1: Core Grid Interaction', () => {
     expect(screen.getByText(/action score:\s*2/i)).toBeInTheDocument()
   })
 
+  it('[US3] clicking the game-board background clears all selection', async () => {
+    render(<GameBoard />)
+    const genGrid = screen.getByRole('grid', { name: /generators grid/i })
+    const genCells = () => within(genGrid).getAllByRole('button')
+
+    // Select the generator at index 0
+    await userEvent.click(genCells()[0])
+    expect(genCells()[0]).toHaveAttribute('aria-pressed', 'true')
+
+    // Click the game-board container itself (not a cell or button)
+    const board = document.querySelector('.game-board') as HTMLElement
+    await userEvent.click(board)
+
+    // All cells should be deselected
+    expect(genCells()[0]).toHaveAttribute('aria-pressed', 'false')
+  })
+
+  it('[US2] clicking an empty Numbers Grid cell while Generators Grid is selected clears all selection', async () => {
+    render(<GameBoard />)
+    const genGrid = screen.getByRole('grid', { name: /generators grid/i })
+    const genCells = () => within(genGrid).getAllByRole('button')
+
+    // Select the generator at index 0
+    await userEvent.click(genCells()[0])
+    expect(genCells()[0]).toHaveAttribute('aria-pressed', 'true')
+
+    // Click an empty Numbers Grid cell (numbers grid starts fully empty)
+    const numGrid = screen.getByRole('grid', { name: /numbers grid/i })
+    const numCells = within(numGrid).getAllByRole('button')
+    await userEvent.click(numCells[0])
+
+    // Generator should be deselected and no numbers cell selected
+    expect(genCells()[0]).toHaveAttribute('aria-pressed', 'false')
+    numCells.forEach(cell => expect(cell).toHaveAttribute('aria-pressed', 'false'))
+  })
+
+  it('[US2] clicking an empty Generators Grid cell while Numbers Grid is selected clears all selection', async () => {
+    render(<GameBoard />)
+    const genGrid = screen.getByRole('grid', { name: /generators grid/i })
+    const genCells = () => within(genGrid).getAllByRole('button')
+
+    // Generate a number so Numbers Grid is non-empty
+    await userEvent.click(genCells()[0])
+    await userEvent.click(genCells()[0]) // GENERATE_NUMBER
+
+    // Select the Numbers Grid cell
+    const numGrid = screen.getByRole('grid', { name: /numbers grid/i })
+    const numCells = () => within(numGrid).getAllByRole('button')
+    const filledNumCell = numCells().find(c => c.textContent !== '')!
+    await userEvent.click(filledNumCell)
+    expect(filledNumCell).toHaveAttribute('aria-pressed', 'true')
+
+    // Click an empty Generators Grid cell (index 1 starts empty)
+    await userEvent.click(genCells()[1])
+
+    // Numbers cell should be deselected and no generators cell selected
+    expect(filledNumCell).toHaveAttribute('aria-pressed', 'false')
+    genCells().forEach(cell => expect(cell).toHaveAttribute('aria-pressed', 'false'))
+  })
+
+  it('[US1] selecting a non-empty cell in the other grid clears the current grid selection', async () => {
+    render(<GameBoard />)
+    const genGrid = screen.getByRole('grid', { name: /generators grid/i })
+    const genCells = () => within(genGrid).getAllByRole('button')
+
+    // Select the generator at index 0 and generate a number so Numbers Grid is non-empty
+    await userEvent.click(genCells()[0])
+    await userEvent.click(genCells()[0]) // GENERATE_NUMBER — generator stays selected
+
+    // Generator cell at index 0 should be selected
+    expect(genCells()[0]).toHaveAttribute('aria-pressed', 'true')
+
+    // Click the non-empty Numbers Grid cell
+    const numGrid = screen.getByRole('grid', { name: /numbers grid/i })
+    const numCells = within(numGrid).getAllByRole('button')
+    const filledNumCell = numCells.find(c => c.textContent !== '')!
+    await userEvent.click(filledNumCell)
+
+    // Generator should be deselected, Numbers cell should be selected
+    expect(genCells()[0]).toHaveAttribute('aria-pressed', 'false')
+    expect(filledNumCell).toHaveAttribute('aria-pressed', 'true')
+  })
+
   it('moving a selected cell to an empty slot does NOT increment score', async () => {
     render(<GameBoard />)
     const genGrid = screen.getByRole('grid', { name: /generators grid/i })

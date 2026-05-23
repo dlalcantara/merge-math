@@ -31,5 +31,6 @@ export type GameAction =
   | { type: 'DESELECT_CELL'; grid: GridType }
   | { type: 'MOVE_CELL'; grid: GridType; sourceIdx: number; targetIdx: number }
   | { type: 'SET_OPERATOR'; operator: Operator }
+  | { type: 'DESELECT_ALL' }
   | { type: 'UNDO' }
   | { type: 'NEW_GAME' }

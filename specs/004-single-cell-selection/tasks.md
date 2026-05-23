@@ -19,7 +19,7 @@
 
 **Purpose**: Confirm the environment is green before touching anything.
 
-- [ ] T001 Run full test suite and record baseline pass count: `npm test` (must show 100 passing)
+- [x] T001 Run full test suite and record baseline pass count: `npm test` (must show 100 passing)
 
 ---
 
@@ -29,7 +29,7 @@
 
 **⚠️ CRITICAL**: No user story implementation can begin until T002 is complete.
 
-- [ ] T002 Add `{ type: 'DESELECT_ALL' }` to the `GameAction` union in `src/engine/types.ts`
+- [x] T002 Add `{ type: 'DESELECT_ALL' }` to the `GameAction` union in `src/engine/types.ts`
 
 **Checkpoint**: Type system updated — user story work can begin.
 
@@ -43,19 +43,19 @@
 
 ### Tests for User Story 1 ⚠️ Write FIRST — must FAIL before implementation
 
-- [ ] T003 [US1] Write failing unit test: `SELECT_CELL 'numbers'` with generators selected → `selectedGeneratorsIdx` becomes null, in `tests/unit/engine/reducer.test.ts`
-- [ ] T004 [US1] Write failing unit test: `SELECT_CELL 'generators'` with numbers selected → `selectedNumbersIdx` becomes null, in `tests/unit/engine/reducer.test.ts`
-- [ ] T005 [US1] Write failing unit test: `DESELECT_ALL` sets both `selectedNumbersIdx` and `selectedGeneratorsIdx` to null, in `tests/unit/engine/reducer.test.ts`
-- [ ] T006 [US1] Write failing integration test: select Generators cell, click non-empty Numbers cell → Generators cell deselects and Numbers cell selects, in `tests/integration/story1-grid-interaction.test.tsx`
+- [x] T003 [US1] Write failing unit test: `SELECT_CELL 'numbers'` with generators selected → `selectedGeneratorsIdx` becomes null, in `tests/unit/engine/reducer.test.ts`
+- [x] T004 [US1] Write failing unit test: `SELECT_CELL 'generators'` with numbers selected → `selectedNumbersIdx` becomes null, in `tests/unit/engine/reducer.test.ts`
+- [x] T005 [US1] Write failing unit test: `DESELECT_ALL` sets both `selectedNumbersIdx` and `selectedGeneratorsIdx` to null, in `tests/unit/engine/reducer.test.ts`
+- [x] T006 [US1] Write failing integration test: select Generators cell, click non-empty Numbers cell → Generators cell deselects and Numbers cell selects, in `tests/integration/story1-grid-interaction.test.tsx`
 
 ### Implementation for User Story 1
 
-- [ ] T007 [US1] Update `SELECT_CELL 'numbers'` case in `src/engine/reducer.ts` to also set `selectedGeneratorsIdx: null`
-- [ ] T008 [US1] Update `SELECT_CELL 'generators'` case in `src/engine/reducer.ts` to also set `selectedNumbersIdx: null`
-- [ ] T009 [US1] Add `DESELECT_ALL` case to `src/engine/reducer.ts` setting both selection fields to null
-- [ ] T010 [US1] Update `handleNumbersCellClick` in `src/components/GameBoard.tsx`: when `selectedNumbersIdx === null` and `selectedGeneratorsIdx !== null` and clicked cell is non-null, dispatch `SELECT_CELL 'numbers'` (reducer auto-clears generators)
-- [ ] T011 [US1] Update `handleGeneratorsCellClick` in `src/components/GameBoard.tsx`: when `selectedGeneratorsIdx === null` and `selectedNumbersIdx !== null` and clicked cell is non-null, dispatch `SELECT_CELL 'generators'` (reducer auto-clears numbers)
-- [ ] T012 [US1] Verify US1 tests pass: `npm test tests/unit/engine/reducer.test.ts tests/integration/story1-grid-interaction.test.tsx`
+- [x] T007 [US1] Update `SELECT_CELL 'numbers'` case in `src/engine/reducer.ts` to also set `selectedGeneratorsIdx: null`
+- [x] T008 [US1] Update `SELECT_CELL 'generators'` case in `src/engine/reducer.ts` to also set `selectedNumbersIdx: null`
+- [x] T009 [US1] Add `DESELECT_ALL` case to `src/engine/reducer.ts` setting both selection fields to null
+- [x] T010 [US1] Update `handleNumbersCellClick` in `src/components/GameBoard.tsx`: when `selectedNumbersIdx === null` and `selectedGeneratorsIdx !== null` and clicked cell is non-null, dispatch `SELECT_CELL 'numbers'` (reducer auto-clears generators)
+- [x] T011 [US1] Update `handleGeneratorsCellClick` in `src/components/GameBoard.tsx`: when `selectedGeneratorsIdx === null` and `selectedNumbersIdx !== null` and clicked cell is non-null, dispatch `SELECT_CELL 'generators'` (reducer auto-clears numbers)
+- [x] T012 [US1] Verify US1 tests pass: `npm test tests/unit/engine/reducer.test.ts tests/integration/story1-grid-interaction.test.tsx`
 
 **Checkpoint**: US1 is independently testable. Global single-selection constraint is enforced.
 
@@ -69,14 +69,14 @@
 
 ### Tests for User Story 2 ⚠️ Write FIRST — must FAIL before implementation
 
-- [ ] T013 [US2] Write failing integration test: select Generators cell, click empty Numbers cell → no cell selected, in `tests/integration/story1-grid-interaction.test.tsx`
-- [ ] T014 [US2] Write failing integration test: select Numbers cell, click empty Generators cell → no cell selected, in `tests/integration/story1-grid-interaction.test.tsx`
+- [x] T013 [US2] Write failing integration test: select Generators cell, click empty Numbers cell → no cell selected, in `tests/integration/story1-grid-interaction.test.tsx`
+- [x] T014 [US2] Write failing integration test: select Numbers cell, click empty Generators cell → no cell selected, in `tests/integration/story1-grid-interaction.test.tsx`
 
 ### Implementation for User Story 2
 
-- [ ] T015 [US2] Update `handleNumbersCellClick` in `src/components/GameBoard.tsx`: when `selectedNumbersIdx === null` and `selectedGeneratorsIdx !== null` and clicked cell is null, dispatch `DESELECT_ALL`
-- [ ] T016 [US2] Update `handleGeneratorsCellClick` in `src/components/GameBoard.tsx`: when `selectedGeneratorsIdx === null` and `selectedNumbersIdx !== null` and clicked cell is null, dispatch `DESELECT_ALL`
-- [ ] T017 [US2] Verify US2 tests pass: `npm test tests/integration/story1-grid-interaction.test.tsx`
+- [x] T015 [US2] Update `handleNumbersCellClick` in `src/components/GameBoard.tsx`: when `selectedNumbersIdx === null` and `selectedGeneratorsIdx !== null` and clicked cell is null, dispatch `DESELECT_ALL`
+- [x] T016 [US2] Update `handleGeneratorsCellClick` in `src/components/GameBoard.tsx`: when `selectedGeneratorsIdx === null` and `selectedNumbersIdx !== null` and clicked cell is null, dispatch `DESELECT_ALL`
+- [x] T017 [US2] Verify US2 tests pass: `npm test tests/integration/story1-grid-interaction.test.tsx`
 
 **Checkpoint**: US2 is independently testable. Empty-cell cross-grid click clears selection.
 
@@ -90,13 +90,13 @@
 
 ### Tests for User Story 3 ⚠️ Write FIRST — must FAIL before implementation
 
-- [ ] T018 [US3] Write failing integration test: select a cell, fire click on `.game-board` root element → no cell selected, in `tests/integration/story1-grid-interaction.test.tsx`
+- [x] T018 [US3] Write failing integration test: select a cell, fire click on `.game-board` root element → no cell selected, in `tests/integration/story1-grid-interaction.test.tsx`
 
 ### Implementation for User Story 3
 
-- [ ] T019 [US3] Add `handleBoardClick(e: React.MouseEvent<HTMLDivElement>)` function to `src/components/GameBoard.tsx`: if `(e.target as HTMLElement).closest('button')` is null, dispatch `DESELECT_ALL`
-- [ ] T020 [US3] Wire `onClick={handleBoardClick}` to the root `<div className="game-board">` in `src/components/GameBoard.tsx`
-- [ ] T021 [US3] Verify US3 test passes: `npm test tests/integration/story1-grid-interaction.test.tsx`
+- [x] T019 [US3] Add `handleBoardClick(e: React.MouseEvent<HTMLDivElement>)` function to `src/components/GameBoard.tsx`: if `(e.target as HTMLElement).closest('button')` is null, dispatch `DESELECT_ALL`
+- [x] T020 [US3] Wire `onClick={handleBoardClick}` to the root `<div className="game-board">` in `src/components/GameBoard.tsx`
+- [x] T021 [US3] Verify US3 test passes: `npm test tests/integration/story1-grid-interaction.test.tsx`
 
 **Checkpoint**: All three user stories are independently functional and tested.
 
@@ -106,7 +106,7 @@
 
 **Purpose**: Full regression check and manual verification.
 
-- [ ] T022 Run complete test suite to confirm no regressions: `npm test` (must show 100 + 6 new = 106 passing)
+- [x] T022 Run complete test suite to confirm no regressions: `npm test` (must show 100 + 6 new = 106 passing)
 - [ ] T023 [P] Manual verification: run `npm run dev` and step through every row of the quickstart.md verification table
 
 ---

@@ -32,6 +32,15 @@ export function GameBoard({ initialTargets }: GameBoardProps) {
     const selIdx = current.selectedNumbersIdx
 
     if (selIdx === null) {
+      if (current.selectedGeneratorsIdx !== null) {
+        // Selection lives in the other grid — cross-grid click
+        if (cell !== null) {
+          dispatch({ type: 'SELECT_CELL', grid: 'numbers', cellIdx: idx })
+        } else {
+          dispatch({ type: 'DESELECT_ALL' })
+        }
+        return
+      }
       if (cell !== null) {
         dispatch({ type: 'SELECT_CELL', grid: 'numbers', cellIdx: idx })
       }
@@ -56,6 +65,15 @@ export function GameBoard({ initialTargets }: GameBoardProps) {
     const selIdx = current.selectedGeneratorsIdx
 
     if (selIdx === null) {
+      if (current.selectedNumbersIdx !== null) {
+        // Selection lives in the other grid — cross-grid click
+        if (cell !== null) {
+          dispatch({ type: 'SELECT_CELL', grid: 'generators', cellIdx: idx })
+        } else {
+          dispatch({ type: 'DESELECT_ALL' })
+        }
+        return
+      }
       if (cell !== null) {
         dispatch({ type: 'SELECT_CELL', grid: 'generators', cellIdx: idx })
       }
@@ -80,6 +98,12 @@ export function GameBoard({ initialTargets }: GameBoardProps) {
     dispatch({ type: 'MERGE_CELLS', sourceGrid: 'generators', sourceIdx: selIdx, targetIdx: idx })
   }
 
+  function handleBoardClick(e: React.MouseEvent<HTMLDivElement>) {
+    if (!(e.target as HTMLElement).closest('button')) {
+      dispatch({ type: 'DESELECT_ALL' })
+    }
+  }
+
   function handleClearNumbers() {
     if (window.confirm('Clear the Numbers Grid?')) {
       dispatch({ type: 'CLEAR_NUMBERS_GRID' })
@@ -93,7 +117,7 @@ export function GameBoard({ initialTargets }: GameBoardProps) {
   }
 
   return (
-    <div className="game-board">
+    <div className="game-board" onClick={handleBoardClick}>
       <ScoreRow
         score={current.actionScore}
         onUndo={() => dispatch({ type: 'UNDO' })}

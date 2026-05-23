@@ -18,10 +18,13 @@ export function gameReducer(store: GameStore, action: GameAction): GameStore {
 
     case 'SELECT_CELL': {
       if (action.grid === 'numbers') {
-        return { ...store, current: { ...current, selectedNumbersIdx: action.cellIdx } }
+        return { ...store, current: { ...current, selectedNumbersIdx: action.cellIdx, selectedGeneratorsIdx: null } }
       }
-      return { ...store, current: { ...current, selectedGeneratorsIdx: action.cellIdx } }
+      return { ...store, current: { ...current, selectedGeneratorsIdx: action.cellIdx, selectedNumbersIdx: null } }
     }
+
+    case 'DESELECT_ALL':
+      return { ...store, current: { ...current, selectedNumbersIdx: null, selectedGeneratorsIdx: null } }
 
     case 'DESELECT_CELL': {
       if (action.grid === 'numbers') {
