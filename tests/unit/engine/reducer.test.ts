@@ -76,6 +76,53 @@ describe('GENERATE_NUMBER', () => {
     const next = gameReducer(store, { type: 'GENERATE_NUMBER' })
     expect(next).toBe(store)
   })
+
+  it('preserves selectedGeneratorsIdx after GENERATE_NUMBER', () => {
+    const store = makeStore({ generatorsGrid: [5, null, null, null], selectedGeneratorsIdx: 0 })
+    const next = gameReducer(store, { type: 'GENERATE_NUMBER' })
+    expect(next.current.selectedGeneratorsIdx).toBe(0)
+  })
+})
+
+describe('MERGE_CELLS (generators grid)', () => {
+  it('applies + operator and places result on target, clears source', () => {
+    const store = makeStore({ generatorsGrid: [3, 5, null, null], selectedGeneratorsIdx: 0 })
+    const next = gameReducer(store, { type: 'MERGE_CELLS', sourceGrid: 'generators', sourceIdx: 0, targetIdx: 1 })
+    expect(next.current.generatorsGrid[1]).toBe(8)
+    expect(next.current.generatorsGrid[0]).toBeNull()
+  })
+
+  it('applies * operator', () => {
+    const store = makeStore({ generatorsGrid: [3, 5, null, null], activeOperator: '*', selectedGeneratorsIdx: 0 })
+    const next = gameReducer(store, { type: 'MERGE_CELLS', sourceGrid: 'generators', sourceIdx: 0, targetIdx: 1 })
+    expect(next.current.generatorsGrid[1]).toBe(15)
+  })
+
+  it('increments actionScore by 1', () => {
+    const store = makeStore({ generatorsGrid: [3, 5, null, null] })
+    const next = gameReducer(store, { type: 'MERGE_CELLS', sourceGrid: 'generators', sourceIdx: 0, targetIdx: 1 })
+    expect(next.current.actionScore).toBe(1)
+  })
+
+  it('clears generators selection after merge', () => {
+    const store = makeStore({ generatorsGrid: [3, 5, null, null], selectedGeneratorsIdx: 0 })
+    const next = gameReducer(store, { type: 'MERGE_CELLS', sourceGrid: 'generators', sourceIdx: 0, targetIdx: 1 })
+    expect(next.current.selectedGeneratorsIdx).toBeNull()
+  })
+
+  it('pushes to history', () => {
+    const store = makeStore({ generatorsGrid: [3, 5, null, null] })
+    const next = gameReducer(store, { type: 'MERGE_CELLS', sourceGrid: 'generators', sourceIdx: 0, targetIdx: 1 })
+    expect(next.history).toHaveLength(1)
+  })
+
+  it('undo restores both generator cells', () => {
+    const store = makeStore({ generatorsGrid: [3, 5, null, null] })
+    const merged = gameReducer(store, { type: 'MERGE_CELLS', sourceGrid: 'generators', sourceIdx: 0, targetIdx: 1 })
+    const undone = gameReducer(merged, { type: 'UNDO' })
+    expect(undone.current.generatorsGrid[0]).toBe(3)
+    expect(undone.current.generatorsGrid[1]).toBe(5)
+  })
 })
 
 describe('MERGE_CELLS', () => {

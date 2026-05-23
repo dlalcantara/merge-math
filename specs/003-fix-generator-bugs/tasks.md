@@ -19,7 +19,7 @@
 
 **Purpose**: Confirm the existing test suite is green before touching any code.
 
-- [ ] T001 Run `npm test` from repo root and confirm all 91 tests pass before any changes
+- [x] T001 Run `npm test` from repo root and confirm all 91 tests pass before any changes
 
 ---
 
@@ -41,14 +41,14 @@
 
 > **Write these tests FIRST and confirm they FAIL before implementing T005.**
 
-- [ ] T002 [P] [US1] Add `describe('MERGE_CELLS (generators grid)')` block to `tests/unit/engine/reducer.test.ts` with tests for: correct merged value placed on target, source cell cleared, score incremented, generators selection cleared, history pushed, undo restores both cells
-- [ ] T003 [P] [US1] Add integration test scenario "merges two generators using active operator" to `tests/integration/story1-grid-interaction.test.tsx` covering: select generator, click second generator, verify merged value, score, and that source cell is removed
+- [x] T002 [P] [US1] Add `describe('MERGE_CELLS (generators grid)')` block to `tests/unit/engine/reducer.test.ts` with tests for: correct merged value placed on target, source cell cleared, score incremented, generators selection cleared, history pushed, undo restores both cells
+- [x] T003 [P] [US1] Add integration test scenario "merges two generators using active operator" to `tests/integration/story1-grid-interaction.test.tsx` covering: select generator, click second generator, verify merged value, score, and that source cell is removed
 
 ### Implementation for User Story 1
 
-- [ ] T004 [US1] Confirm T002 and T003 tests fail (run `npm test` and check for red)
-- [ ] T005 [US1] Fix `MERGE_CELLS` in `src/engine/reducer.ts` line 64: change `const targetVal = (action.sourceGrid === 'numbers' ? sourceGrid : targetGrid)[action.targetIdx] as number` to `const targetVal = sourceGrid[action.targetIdx] as number`
-- [ ] T006 [US1] Run `npm test` and confirm T002 and T003 now pass and no existing tests regress
+- [x] T004 [US1] Confirm T002 and T003 tests fail (run `npm test` and check for red)
+- [x] T005 [US1] Fix `MERGE_CELLS` in `src/engine/reducer.ts` line 64: change `const targetVal = (action.sourceGrid === 'numbers' ? sourceGrid : targetGrid)[action.targetIdx] as number` to `const targetVal = sourceGrid[action.targetIdx] as number`
+- [x] T006 [US1] Run `npm test` and confirm T002 and T003 now pass and no existing tests regress
 
 **Checkpoint**: User Story 1 fully functional — generators can be merged in the Generators Grid.
 
@@ -64,14 +64,14 @@
 
 > **Write these tests FIRST and confirm they FAIL before implementing T010.**
 
-- [ ] T007 [P] [US2] Add test `'preserves selectedGeneratorsIdx after GENERATE_NUMBER'` to the existing `describe('GENERATE_NUMBER')` block in `tests/unit/engine/reducer.test.ts`: assert `next.current.selectedGeneratorsIdx === 0` (not null) after dispatching `GENERATE_NUMBER` with `selectedGeneratorsIdx: 0`
-- [ ] T008 [P] [US2] Add integration test scenario "generator remains selected after copying value to Numbers Grid" to `tests/integration/story1-grid-interaction.test.tsx`: click selected generator twice, verify two Numbers Grid cells are populated and the generator is still selected
+- [x] T007 [P] [US2] Add test `'preserves selectedGeneratorsIdx after GENERATE_NUMBER'` to the existing `describe('GENERATE_NUMBER')` block in `tests/unit/engine/reducer.test.ts`: assert `next.current.selectedGeneratorsIdx === 0` (not null) after dispatching `GENERATE_NUMBER` with `selectedGeneratorsIdx: 0`
+- [x] T008 [P] [US2] Add integration test scenario "generator remains selected after copying value to Numbers Grid" to `tests/integration/story1-grid-interaction.test.tsx`: click selected generator twice, verify two Numbers Grid cells are populated and the generator is still selected
 
 ### Implementation for User Story 2
 
-- [ ] T009 [US2] Confirm T007 and T008 tests fail (run `npm test` and check for red)
-- [ ] T010 [US2] Fix `GENERATE_NUMBER` in `src/engine/reducer.ts` line 57: remove `selectedGeneratorsIdx: null` from the return, changing `return scored(store, { ...current, numbersGrid: nums, selectedGeneratorsIdx: null })` to `return scored(store, { ...current, numbersGrid: nums })`
-- [ ] T011 [US2] Run `npm test` and confirm T007 and T008 now pass and no existing tests regress
+- [x] T009 [US2] Confirm T007 and T008 tests fail (run `npm test` and check for red)
+- [x] T010 [US2] Fix `GENERATE_NUMBER` in `src/engine/reducer.ts` line 57: remove `selectedGeneratorsIdx: null` from the return, changing `return scored(store, { ...current, numbersGrid: nums, selectedGeneratorsIdx: null })` to `return scored(store, { ...current, numbersGrid: nums })`
+- [x] T011 [US2] Run `npm test` and confirm T007 and T008 now pass and no existing tests regress
 
 **Checkpoint**: User Story 2 fully functional — generator stays selected after each copy action.
 
@@ -81,9 +81,9 @@
 
 **Purpose**: Final validation and coverage check.
 
-- [ ] T012 Run `npm run test:coverage` and confirm overall coverage remains ≥ 80%
-- [ ] T013 [P] Run `npm run typecheck` and confirm zero TypeScript errors
-- [ ] T014 [P] Run `npm run lint` and confirm zero lint errors
+- [x] T012 Run `npm run test:coverage` and confirm overall coverage remains ≥ 80%
+- [x] T013 [P] Run `npm run typecheck` and confirm zero TypeScript errors
+- [x] T014 [P] Run `npm run lint` and confirm zero lint errors
 - [ ] T015 Manually verify both fixes using `npm run dev` following the steps in `specs/003-fix-generator-bugs/quickstart.md`
 
 ---

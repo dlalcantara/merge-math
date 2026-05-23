@@ -54,14 +54,13 @@ export function gameReducer(store: GameStore, action: GameAction): GameStore {
       if (emptyIdx === -1) return store
       const nums = [...current.numbersGrid]
       nums[emptyIdx] = current.generatorsGrid[current.selectedGeneratorsIdx]
-      return scored(store, { ...current, numbersGrid: nums, selectedGeneratorsIdx: null })
+      return scored(store, { ...current, numbersGrid: nums })
     }
 
     case 'MERGE_CELLS': {
       const sourceGrid = action.sourceGrid === 'numbers' ? [...current.numbersGrid] : [...current.generatorsGrid]
-      const targetGrid = action.sourceGrid === 'numbers' ? sourceGrid : [...current.numbersGrid]
       const sourceVal = sourceGrid[action.sourceIdx] as number
-      const targetVal = (action.sourceGrid === 'numbers' ? sourceGrid : targetGrid)[action.targetIdx] as number
+      const targetVal = sourceGrid[action.targetIdx] as number
       const result = applyOperator(sourceVal, targetVal, current.activeOperator)
       if (action.sourceGrid === 'numbers') {
         sourceGrid[action.sourceIdx] = null
