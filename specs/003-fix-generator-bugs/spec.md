@@ -28,29 +28,29 @@ A player has two or more generators in the Generators Grid and wants to merge th
 
 ---
 
-### User Story 2 - Generate Action Preserves Generator Selection (Priority: P1)
+### User Story 2 - Generate Number Preserves Generator Selection (Priority: P1)
 
-A player selects a generator in the Generators Grid and clicks "Generate Generator" to add a new generator. The previously selected generator should remain selected so the player can immediately continue using it to populate the Numbers Grid without re-selecting.
+A player selects a generator in the Generators Grid and clicks it again to copy its value into the Numbers Grid. After copying, the generator should remain selected so the player can immediately click it again to keep populating the Numbers Grid without re-selecting.
 
-**Why this priority**: Losing selection after Generate forces the player to re-select their generator every time they want to generate a new number, creating unnecessary friction in the core gameplay loop.
+**Why this priority**: Losing selection after copying a generator's value forces the player to re-select the same generator every time they want to generate another number, creating unnecessary friction in the core gameplay loop.
 
-**Independent Test**: Select a generator in the Generators Grid. Click "Generate Generator". Verify the selected generator is still visually highlighted and remains selected, while the new generator appears in an empty slot.
+**Independent Test**: Select a generator in the Generators Grid. Click it again to copy its value into an empty Numbers Grid cell. Verify the generator is still visually highlighted and remains selected. Click it a third time to copy the value again — it should work without any re-selection.
 
 **Acceptance Scenarios**:
 
-1. **Given** a generator cell is selected in the Generators Grid, **When** the player clicks "Generate Generator", **Then** a new generator (value 1) appears in an empty Generators Grid slot, the previously selected generator remains selected, and the Action Score increments by 1.
-2. **Given** a generator cell is selected, **When** "Generate Generator" is clicked and there is no empty slot in the Generators Grid, **Then** no new generator is added, and the selection is preserved unchanged.
-3. **Given** no generator cell is selected, **When** the player clicks "Generate Generator", **Then** a new generator appears in an empty slot and no selection is created (existing behavior is unchanged).
-4. **Given** a generator cell is selected and "Generate Generator" is clicked, **When** the action completes, **Then** the player can immediately click the still-selected generator again to copy its value into the Numbers Grid without any additional interaction.
+1. **Given** a generator cell (value 5) is selected and the Numbers Grid has an empty cell, **When** the player clicks the already-selected generator, **Then** the value 5 appears in the first empty Numbers Grid cell, the generator cell remains selected, and the Action Score increments by 1.
+2. **Given** a generator cell is selected and the player copies its value multiple times, **When** each copy completes, **Then** the generator remains selected after each copy until the Numbers Grid is full or the player explicitly deselects.
+3. **Given** a generator cell is selected and the Numbers Grid is full, **When** the player clicks the already-selected generator, **Then** nothing happens and the generator remains selected (no deselect occurs).
+4. **Given** a generator cell is selected and its value has been copied to the Numbers Grid, **When** the action completes, **Then** the player can immediately click the still-selected generator again to copy its value into the next empty Numbers Grid cell without any additional interaction.
 
 ---
 
 ### Edge Cases
 
-- What happens when "Generate Generator" is clicked while the Generators Grid is full? No new generator is added; selection is preserved.
+- What happens when the player copies a generator value and the Numbers Grid is full? Nothing changes; the generator remains selected.
 - What happens if a merge in the Generators Grid results in a value of 0 (e.g., 3 - 3)? The cell receives value 0, consistent with Numbers Grid merge behavior.
 - What happens if the player performs a merge in the Generators Grid and then clicks Undo? The Generators Grid reverts to the state before the merge, and the Action Score decrements by 1.
-- What happens if "Generate Generator" is undone while the original generator was selected? The added generator is removed; the original selected generator remains selected.
+- What happens if a "copy generator value" action is undone? The Numbers Grid cell is removed, and the original selected generator remains selected (undo restores the prior state, which had the generator selected).
 
 ## Requirements *(mandatory)*
 
@@ -60,22 +60,22 @@ A player selects a generator in the Generators Grid and clicks "Generate Generat
 - **FR-002**: A merge in the Generators Grid MUST increment the Action Score by 1.
 - **FR-003**: A merge in the Generators Grid MUST be undoable, reverting the Generators Grid cells and Action Score to their pre-merge state.
 - **FR-004**: Moving a generator to an empty Generators Grid cell MUST NOT increment the Action Score (consistent with Numbers Grid movement behavior).
-- **FR-005**: The "Generate Generator" action MUST preserve the currently selected generator in the Generators Grid — the selection must remain active after the action completes.
-- **FR-006**: When no generator is selected and "Generate Generator" is clicked, existing behavior (no selection created) MUST remain unchanged.
+- **FR-005**: The "copy generator value to Numbers Grid" action (clicking the already-selected generator cell) MUST preserve the currently selected generator — the selection must remain active after the value is copied.
+- **FR-006**: When no generator is selected and the player attempts to copy a value, existing behavior (no action taken) MUST remain unchanged.
 - **FR-007**: All existing Generators Grid interactions (selection, copy-to-Numbers-Grid, move) MUST continue to work correctly after these fixes.
 
 ### Key Entities
 
 - **Generator Cell**: An occupied cell in the Generators Grid with a numeric value. Can be selected, merged, moved, or used to populate Numbers Grid cells.
 - **Generators Grid**: The 2×2 grid holding generator cells. Now supports merge operations between its cells.
-- **Selection State**: The currently selected cell (if any) across either grid. Must persist through the "Generate Generator" action when a Generators Grid cell is selected.
+- **Selection State**: The currently selected cell (if any) across either grid. Must persist through the "copy generator value to Numbers Grid" action — deselection should only occur via explicit deselect or a merge operation.
 
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 
 - **SC-001**: A player can successfully merge two generator cells in the Generators Grid in 100% of attempts when the operator is + or *.
-- **SC-002**: After clicking "Generate Generator" with a generator selected, the selection is preserved in 100% of cases — the player never needs to re-select before using the generator.
+- **SC-002**: After a generator's value is copied to the Numbers Grid, the generator remains selected in 100% of cases — the player never needs to re-select the same generator to copy its value again.
 - **SC-003**: All existing gameplay scenarios (Numbers Grid merge, generate-to-Numbers-Grid, undo, target claiming) continue to work without regression.
 - **SC-004**: Undo correctly reverses Generators Grid merges, restoring both grid state and score.
 
@@ -83,5 +83,5 @@ A player selects a generator in the Generators Grid and clicks "Generate Generat
 
 - The Generators Grid merge uses the same operator and scoring logic as the Numbers Grid merge — no separate merge rules are needed for generators.
 - The active math operator applies to Generators Grid merges exactly as it does for Numbers Grid merges (including the existing restriction that - and / operators may or may not be allowed — the fix does not change operator behavior, only adds support for the merge interaction in that grid).
-- "Deselect" in the bug description means the generator's visual selected state is lost after clicking "Generate Generator"; the fix is to retain that state.
+- "Generate action" in the bug description refers to clicking the already-selected generator to copy its value to the Numbers Grid (not the "Generate Generator" button which adds a new generator). The "Generate Generator" button already preserves selection correctly.
 - The fix applies only to the described bugs; no other behavior changes are introduced.
