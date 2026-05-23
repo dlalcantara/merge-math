@@ -76,7 +76,7 @@ A player taps or clicks anywhere on the screen that is not a grid cell or a butt
 - **FR-002**: When a non-empty cell in Grid A is clicked while a cell in Grid B is selected, the Grid B selection MUST clear before Grid A's cell becomes selected; the result is exactly one selected cell.
 - **FR-003**: When a player clicks an empty cell in a grid that does not currently contain the selected cell, the current selection MUST clear; no Cell Movement or other action occurs.
 - **FR-004**: When a player taps or clicks anywhere on the page that is not a grid cell, not an operator toggle, and not a button control, the current selection MUST clear.
-- **FR-005**: Tap-outside deselection MUST work consistently on touch devices at 720×1280 resolution and MUST NOT interfere with normal scrolling if scrolling is present.
+- **FR-005**: Tap-outside deselection MUST work consistently on touch devices at 720×1280 resolution. The game MUST NOT introduce scrolling.
 - **FR-006**: All existing interactions that already clear the selection (Cell Merge, Merge All, Cell Movement, Clear Grid confirmations, Generate Number auto-clear on generation) MUST continue to work without change.
 - **FR-007**: Operator toggling MUST NOT affect the current selection (no selection change on operator click).
 - **FR-008**: The visual highlight indicating a selected cell MUST be unambiguous — at most one cell may appear highlighted at any time.
