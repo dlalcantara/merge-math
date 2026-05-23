@@ -13,11 +13,11 @@ export function generateTargets(): number[] {
   })
 }
 
-export function generateInitialState(): GameState {
+export function generateInitialState(targets?: number[]): GameState {
   return {
     numbersGrid: Array(9).fill(null),
     generatorsGrid: [1, null, null, null],
-    targets: generateTargets(),
+    targets: targets ?? generateTargets(),
     activeOperator: '+',
     actionScore: 0,
     selectedNumbersIdx: null,

@@ -6,7 +6,7 @@
   --color-target: #10b981;
   --spacing-sm: 0.25rem;
   --spacing-md: 0.5rem;
-  --spacing-lg: 1rem;
+  --spacing-lg: 0.75rem;
 }
 
 *, *::before, *::after {
@@ -19,16 +19,17 @@ body {
   font-family: system-ui, -apple-system, sans-serif;
   background: #13131f;
   color: #e0e0f0;
-  min-height: 100dvh;
+  min-height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   padding: var(--spacing-lg);
 }
 
 #root {
   width: 100%;
-  max-width: 480px;
+  max-width: 400px;
 }
 
 .app {
@@ -84,6 +85,7 @@ h2 {
   cursor: pointer;
   aspect-ratio: 1;
   width: 100%;
+  max-height: min(12vw, 56px);
   transition: background 0.1s, border-color 0.1s, outline 0.1s;
 }
 

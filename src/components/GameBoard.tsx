@@ -1,16 +1,31 @@
 import { useGame } from '../hooks/useGame'
-import { Grid } from './Grid'
 import { OperatorSelector } from './OperatorSelector'
 import { TargetList } from './TargetList'
 import { WinModal } from './WinModal'
-import { ScoreDisplay } from './ScoreDisplay'
-import { ActionButtons } from './ActionButtons'
+import { ScoreRow } from './ScoreRow'
+import { NumbersSection } from './NumbersSection'
+import { GeneratorsSection } from './GeneratorsSection'
 import type { Operator } from '../engine/types'
 
-export function GameBoard() {
-  const { store, dispatch } = useGame()
+interface GameBoardProps {
+  initialTargets?: number[]
+}
+
+export function GameBoard({ initialTargets }: GameBoardProps) {
+  const { store, dispatch } = useGame(initialTargets)
   const { current } = store
   const isWon = current.targets.length === 0
+
+  function canMergeAll(): boolean {
+    return (
+      (current.activeOperator === '+' || current.activeOperator === '*') &&
+      current.numbersGrid.filter(v => v !== null).length >= 2
+    )
+  }
+
+  function canGenerateGenerator(): boolean {
+    return current.generatorsGrid.some(v => v === null)
+  }
 
   function handleNumbersCellClick(idx: number) {
     const cell = current.numbersGrid[idx]
@@ -65,40 +80,50 @@ export function GameBoard() {
     dispatch({ type: 'MERGE_CELLS', sourceGrid: 'generators', sourceIdx: selIdx, targetIdx: idx })
   }
 
+  function handleClearNumbers() {
+    if (window.confirm('Clear the Numbers Grid?')) {
+      dispatch({ type: 'CLEAR_NUMBERS_GRID' })
+    }
+  }
+
+  function handleClearGenerators() {
+    if (window.confirm('Clear the Generators Grid?')) {
+      dispatch({ type: 'CLEAR_GENERATORS_GRID' })
+    }
+  }
+
   return (
     <div className="game-board">
-      <ScoreDisplay score={current.actionScore} />
+      <ScoreRow
+        score={current.actionScore}
+        onUndo={() => dispatch({ type: 'UNDO' })}
+        undoDisabled={store.history.length === 0}
+      />
 
-      <section aria-label="Numbers Grid section">
-        <h2>Numbers Grid</h2>
-        <Grid
-          cells={current.numbersGrid}
-          cols={3}
-          label="Numbers Grid"
-          selectedIdx={current.selectedNumbersIdx}
-          onCellClick={handleNumbersCellClick}
-        />
-      </section>
+      <TargetList targets={current.targets} dispatch={dispatch} />
 
-      <section aria-label="Generators Grid section">
-        <h2>Generators Grid</h2>
-        <Grid
-          cells={current.generatorsGrid}
-          cols={2}
-          label="Generators Grid"
-          selectedIdx={current.selectedGeneratorsIdx}
-          onCellClick={handleGeneratorsCellClick}
-        />
-      </section>
+      <NumbersSection
+        cells={current.numbersGrid}
+        selectedIdx={current.selectedNumbersIdx}
+        onCellClick={handleNumbersCellClick}
+        onMergeAll={() => dispatch({ type: 'MERGE_ALL_NUMBERS' })}
+        onClearNumbers={handleClearNumbers}
+        mergeAllDisabled={!canMergeAll()}
+      />
 
       <OperatorSelector
         activeOperator={current.activeOperator}
         onSelect={(op: Operator) => dispatch({ type: 'SET_OPERATOR', operator: op })}
       />
 
-      <TargetList targets={current.targets} dispatch={dispatch} />
-
-      <ActionButtons store={store} state={current} dispatch={dispatch} />
+      <GeneratorsSection
+        cells={current.generatorsGrid}
+        selectedIdx={current.selectedGeneratorsIdx}
+        onCellClick={handleGeneratorsCellClick}
+        onGenerateGenerator={() => dispatch({ type: 'GENERATE_GENERATOR' })}
+        onClearGenerators={handleClearGenerators}
+        generateDisabled={!canGenerateGenerator()}
+      />
 
       {isWon && <WinModal score={current.actionScore} dispatch={dispatch} />}
     </div>

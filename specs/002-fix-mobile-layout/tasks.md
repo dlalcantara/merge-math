@@ -26,7 +26,7 @@ Single-project SPA: `src/` at repository root
 
 **Purpose**: Confirm the existing test suite is green before any changes land
 
-- [ ] T001 Verify existing test suite passes by running `npm test` before making any changes
+- [X] T001 Verify existing test suite passes by running `npm test` before making any changes
 
 ---
 
@@ -36,8 +36,8 @@ Single-project SPA: `src/` at repository root
 
 **⚠️ CRITICAL**: Phase 6 (US4) cannot begin until T002 and T003 are done
 
-- [ ] T002 Add optional `targets?: number[]` parameter to `generateInitialState` in `src/engine/gameState.ts`; use provided array when given, otherwise call existing `generateTargets()`
-- [ ] T003 Update `src/hooks/useGame.ts` to accept an optional `initialTargets?: number[]` parameter and forward it to `generateInitialState`
+- [X] T002 Add optional `targets?: number[]` parameter to `generateInitialState` in `src/engine/gameState.ts`; use provided array when given, otherwise call existing `generateTargets()`
+- [X] T003 Update `src/hooks/useGame.ts` to accept an optional `initialTargets?: number[]` parameter and forward it to `generateInitialState`
 
 **Checkpoint**: Engine changes complete — US1, US2, and US3 can proceed independently; US4 may now begin
 
@@ -49,7 +49,7 @@ Single-project SPA: `src/` at repository root
 
 **Independent Test**: Open the app in Chrome DevTools Device Toolbar at 720×1280; confirm no horizontal scrollbar appears and all UI elements are visible without vertical scrolling.
 
-- [ ] T004 [P] [US1] Update `src/styles/game.css` — set `#root { max-width: 400px }`, add `max-height: min(12vw, 56px)` to grid cells so they scale with viewport width, reduce `--spacing-lg` to `0.75rem`; these three changes together compress the layout to fit in 1280 px height (satisfies FR-001, FR-009)
+- [X] T004 [P] [US1] Update `src/styles/game.css` — set `#root { max-width: 400px }`, add `max-height: min(12vw, 56px)` to grid cells so they scale with viewport width, reduce `--spacing-lg` to `0.75rem`; these three changes together compress the layout to fit in 1280 px height (satisfies FR-001, FR-009)
 
 **Checkpoint**: Mobile viewport constraint met — verify manually in Chrome DevTools at 720×1280 before proceeding
 
@@ -65,17 +65,17 @@ Single-project SPA: `src/` at repository root
 
 > **NOTE: Write these tests FIRST and ensure they FAIL before any implementation begins**
 
-- [ ] T005 [P] [US2] Write failing test verifying GameBoard renders sections in the correct DOM order in `src/components/__tests__/GameBoard.test.tsx` — assert ScoreRow appears before TargetList, TargetList before NumbersSection, etc.
-- [ ] T006 [P] [US2] Write failing unit tests for ScoreRow in `src/components/__tests__/ScoreRow.test.tsx` — renders action score value and Undo button in the same row
-- [ ] T007 [P] [US2] Write failing unit tests for NumbersSection in `src/components/__tests__/NumbersSection.test.tsx` — renders Numbers grid, "Merge All Numbers" button, and "Clear Numbers Grid" button grouped together
-- [ ] T008 [P] [US2] Write failing unit tests for GeneratorsSection in `src/components/__tests__/GeneratorsSection.test.tsx` — renders Generators grid, "Generate Generator" button, and "Clear Generators Grid" button grouped together
+- [X] T005 [P] [US2] Write failing test verifying GameBoard renders sections in the correct DOM order in `src/components/__tests__/GameBoard.test.tsx` — assert ScoreRow appears before TargetList, TargetList before NumbersSection, etc.
+- [X] T006 [P] [US2] Write failing unit tests for ScoreRow in `src/components/__tests__/ScoreRow.test.tsx` — renders action score value and Undo button in the same row
+- [X] T007 [P] [US2] Write failing unit tests for NumbersSection in `src/components/__tests__/NumbersSection.test.tsx` — renders Numbers grid, "Merge All Numbers" button, and "Clear Numbers Grid" button grouped together
+- [X] T008 [P] [US2] Write failing unit tests for GeneratorsSection in `src/components/__tests__/GeneratorsSection.test.tsx` — renders Generators grid, "Generate Generator" button, and "Clear Generators Grid" button grouped together
 
 ### Implementation for User Story 2
 
-- [ ] T009 [P] [US2] Create `src/components/ScoreRow.tsx` — renders the action score display and the Undo button side by side in a single flex row
-- [ ] T010 [P] [US2] Create `src/components/NumbersSection.tsx` — renders the Numbers Grid component followed by "Merge All Numbers" and "Clear Numbers Grid" buttons in a grouped section
-- [ ] T011 [P] [US2] Create `src/components/GeneratorsSection.tsx` — renders the Generators Grid component followed by "Generate Generator" and "Clear Generators Grid" buttons in a grouped section
-- [ ] T012 [US2] Refactor `src/components/GameBoard.tsx` to import and render sections in order: ScoreRow → TargetList → NumbersSection → OperatorSelector → GeneratorsSection; remove the standalone ActionButtons dependency (depends on T009, T010, T011)
+- [X] T009 [P] [US2] Create `src/components/ScoreRow.tsx` — renders the action score display and the Undo button side by side in a single flex row
+- [X] T010 [P] [US2] Create `src/components/NumbersSection.tsx` — renders the Numbers Grid component followed by "Merge All Numbers" and "Clear Numbers Grid" buttons in a grouped section
+- [X] T011 [P] [US2] Create `src/components/GeneratorsSection.tsx` — renders the Generators Grid component followed by "Generate Generator" and "Clear Generators Grid" buttons in a grouped section
+- [X] T012 [US2] Refactor `src/components/GameBoard.tsx` to import and render sections in order: ScoreRow → TargetList → NumbersSection → OperatorSelector → GeneratorsSection; remove the standalone ActionButtons dependency (depends on T009, T010, T011)
 
 **Checkpoint**: User Story 2 complete — layout order is correct and all component tests pass
 
@@ -87,7 +87,7 @@ Single-project SPA: `src/` at repository root
 
 **Independent Test**: Open the app in a viewport wider than 720 px; confirm game content is horizontally centred with equal whitespace on both sides and the card sits at the top, not the middle, of the page.
 
-- [ ] T013 [P] [US3] Update `src/styles/game.css` — ensure `body` has `display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh` so the 400 px game card is centred horizontally and top-aligned on wide viewports (satisfies FR-002, FR-003; coordinate with T004 which also modifies this file)
+- [X] T013 [P] [US3] Update `src/styles/game.css` — ensure `body` has `display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh` so the 400 px game card is centred horizontally and top-aligned on wide viewports (satisfies FR-002, FR-003; coordinate with T004 which also modifies this file)
 
 **Checkpoint**: Desktop centering confirmed — verify in DevTools at a viewport wider than 720 px
 
@@ -103,13 +103,13 @@ Single-project SPA: `src/` at repository root
 
 > **NOTE: Write these tests FIRST and ensure they FAIL before any implementation begins**
 
-- [ ] T014 [P] [US4] Write failing unit tests for SetupScreen in `src/components/__tests__/SetupScreen.test.tsx` — covers: renders 10 pre-filled inputs, shows per-field `<span role="alert">` error for non-integer or out-of-range values (< −9999 or > 9999), disables Start Game button while any field is invalid, calls `onStart(targets)` with confirmed numbers on valid submission
-- [ ] T015 [P] [US4] Write failing integration test for App setup-to-game flow in `src/App.test.tsx` — covers: SetupScreen is shown on initial load, completing setup (filling valid values and clicking Start Game) causes GameBoard to render
+- [X] T014 [P] [US4] Write failing unit tests for SetupScreen in `src/components/__tests__/SetupScreen.test.tsx` — covers: renders 10 pre-filled inputs, shows per-field `<span role="alert">` error for non-integer or out-of-range values (< −9999 or > 9999), disables Start Game button while any field is invalid, calls `onStart(targets)` with confirmed numbers on valid submission
+- [X] T015 [P] [US4] Write failing integration test for App setup-to-game flow in `src/App.test.tsx` — covers: SetupScreen is shown on initial load, completing setup (filling valid values and clicking Start Game) causes GameBoard to render
 
 ### Implementation for User Story 4
 
-- [ ] T016 [US4] Create `src/components/SetupScreen.tsx` — renders 10 `<input type="text">` fields pre-filled by `generateTargets()`, validates each field as an integer in −9999–9999, displays an inline `<span role="alert">` error below each invalid field, renders a "Start Game" `<button>` that calls `onStart(targets: number[])` only when all fields are valid (depends on T002 for `generateTargets` signature)
-- [ ] T017 [US4] Update `src/App.tsx` — add `phase: 'setup' | 'playing'` state and `confirmedTargets: number[] | null`, render `<SetupScreen onStart={handleStart}>` when phase is `'setup'`, pass `confirmedTargets` to `useGame` and render `<GameBoard>` when phase is `'playing'`; remove any existing app-level title element (depends on T016, T003)
+- [X] T016 [US4] Create `src/components/SetupScreen.tsx` — renders 10 `<input type="text">` fields pre-filled by `generateTargets()`, validates each field as an integer in −9999–9999, displays an inline `<span role="alert">` error below each invalid field, renders a "Start Game" `<button>` that calls `onStart(targets: number[])` only when all fields are valid (depends on T002 for `generateTargets` signature)
+- [X] T017 [US4] Update `src/App.tsx` — add `phase: 'setup' | 'playing'` state and `confirmedTargets: number[] | null`, render `<SetupScreen onStart={handleStart}>` when phase is `'setup'`, pass `confirmedTargets` to `useGame` and render `<GameBoard>` when phase is `'playing'`; remove any existing app-level title element (depends on T016, T003)
 
 **Checkpoint**: User Story 4 complete — SetupScreen appears on load, validation prevents bad targets, game starts with confirmed values
 
@@ -119,10 +119,10 @@ Single-project SPA: `src/` at repository root
 
 **Purpose**: Quality gates and final validation across all stories
 
-- [ ] T018 [P] Run `npm run typecheck` and fix all TypeScript errors in new and modified files (`SetupScreen.tsx`, `ScoreRow.tsx`, `NumbersSection.tsx`, `GeneratorsSection.tsx`, `GameBoard.tsx`, `App.tsx`, `gameState.ts`, `useGame.ts`)
-- [ ] T019 [P] Run `npm run lint` and fix all linting issues across new and modified files
-- [ ] T020 Run `npm run test:coverage` and confirm the ≥80% lines/branches coverage threshold passes
-- [ ] T021 Manually verify 720×1280 viewport in Chrome DevTools per `quickstart.md` — no horizontal scroll, full UI visible without vertical scrolling, all buttons reachable
+- [X] T018 [P] Run `npm run typecheck` and fix all TypeScript errors in new and modified files (`SetupScreen.tsx`, `ScoreRow.tsx`, `NumbersSection.tsx`, `GeneratorsSection.tsx`, `GameBoard.tsx`, `App.tsx`, `gameState.ts`, `useGame.ts`)
+- [X] T019 [P] Run `npm run lint` and fix all linting issues across new and modified files
+- [X] T020 Run `npm run test:coverage` and confirm the ≥80% lines/branches coverage threshold passes
+- [X] T021 Manually verify 720×1280 viewport in Chrome DevTools per `quickstart.md` — no horizontal scroll, full UI visible without vertical scrolling, all buttons reachable
 
 **Checkpoint**: All stories complete, all quality gates pass, manual verification done — ready to ship
 
