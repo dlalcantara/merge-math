@@ -52,8 +52,10 @@ A player wants to reset the Generator Grid. They click the renamed "Reset Genera
 
 **Acceptance Scenarios**:
 
-1. **Given** the Generator Grid has multiple generators, **When** the player clicks "Reset Generators Grid," **Then** all generators are removed and a single Generator with value 1 is added.
-2. **Given** the Generator Grid is already empty, **When** the player clicks "Reset Generators Grid," **Then** a single Generator with value 1 is created.
+1. **Given** the Generator Grid has multiple generators, **When** the player clicks "Reset Generators Grid," **Then** a confirmation prompt appears before any change is made.
+2. **Given** the confirmation prompt is shown, **When** the player confirms, **Then** all generators are removed, a single Generator with value 1 is added, and the action count increases by one.
+3. **Given** the confirmation prompt is shown, **When** the player cancels, **Then** the Generator Grid remains unchanged and the action count is unaffected.
+4. **Given** the player has just reset the Generator Grid, **When** undo is triggered, **Then** the prior set of generators is restored and the action count decrements by one.
 
 ---
 
@@ -72,6 +74,7 @@ Targets are permanently displayed and cycle through three visual states: "Not ye
 3. **Given** a target in "Available" state, **When** the player clicks it, **Then** the target moves to "Accomplished" state, the action count does not change, and the number remains in the Numbers Grid.
 4. **Given** all targets are "Accomplished," **When** the game state is observed, **Then** the game ends.
 5. **Given** a target is already "Accomplished," **When** the corresponding number appears in the Numbers Grid, **Then** the target remains "Accomplished" (no regression).
+6. **Given** a target was just marked "Accomplished," **When** the player undoes, **Then** the target reverts to "Available" if the matching number is still in the Numbers Grid, or to "Not yet accomplished" if it is not.
 
 ---
 
@@ -93,12 +96,11 @@ New players start with a fixed tutorial target list of 8 numbers: 1, 2, 5, 12, 2
 
 ### Edge Cases
 
-- What happens when the player clicks "Convert to Generator" while the Numbers Grid is empty?
-Disable the Convert to Generator button when nothing is selected in the Numbers Grid
-- What happens if a target value appears multiple times in the Numbers Grid — does the first match satisfy the target? Yes
-- What happens if Randomize is clicked multiple times before starting — does each click generate a fresh list? Yes
-- What happens when a Generator with value 1 already exists and the player clicks "Reset Generators Grid"? Its ok
-- What if undo is triggered after a target is marked Accomplished — does the target revert? Yes
+- The "Convert to Generator" button is disabled when no number is selected in the Numbers Grid.
+- If multiple numbers in the Numbers Grid match a target value, any one of them satisfies the "Available" state.
+- Clicking Randomize multiple times before starting generates a fresh list each time.
+- "Reset Generators Grid" always removes all generators and creates exactly one with value 1, regardless of existing grid contents.
+- Undo reverts a target from "Accomplished" back to "Available" (if the matching number is still in the Numbers Grid) or "Not yet accomplished."
 
 ## Requirements *(mandatory)*
 
@@ -111,7 +113,7 @@ Disable the Convert to Generator button when nothing is selected in the Numbers 
 - **FR-003**: When "Convert to Generator" is clicked and a number is selected, the system MUST remove that number from the Numbers Grid.
 - **FR-004**: When "Convert to Generator" is clicked and a number is selected, the action count MUST increase by one.
 - **FR-005**: The "Convert to Generator" action MUST be undoable (action count decrements, generator is removed, number is restored).
-- **FR-006**: When no number is selected, the "Convert to Generator" button MUST have no effect.
+- **FR-006**: The "Convert to Generator" button MUST be visually disabled when no number is selected in the Numbers Grid.
 
 **Generator Grid Interaction**
 
@@ -120,7 +122,7 @@ Disable the Convert to Generator button when nothing is selected in the Numbers 
 - **FR-009**: Move and Generate actions in the Generator Grid MUST remain functional as before.
 - **FR-010**: The "Generate Generator" button MUST be removed from the UI.
 - **FR-011**: The "Clear Generators" button MUST be renamed to "Reset Generators Grid."
-- **FR-012**: When "Reset Generators Grid" is clicked, all existing generators MUST be removed and a single Generator with value 1 MUST be created.
+- **FR-012**: When "Reset Generators Grid" is clicked, the system MUST display a confirmation prompt before proceeding. If confirmed, all existing generators MUST be removed and a single Generator with value 1 MUST be created, the action count MUST increase by one, and the action MUST be undoable (restoring the prior set of generators and decrementing the action count). If cancelled, the Generator Grid MUST remain unchanged.
 
 **Targets Display**
 
@@ -132,6 +134,7 @@ Disable the Convert to Generator button when nothing is selected in the Numbers 
 - **FR-018**: Clicking an "Available" target MUST NOT change the action count.
 - **FR-019**: Clicking an "Available" target MUST NOT remove the matching number from the Numbers Grid.
 - **FR-020**: The game MUST end when all targets reach the "Accomplished" state.
+- **FR-024**: Marking a target as "Accomplished" MUST be an undoable action; undo reverts the target to "Available" if the matching number is still in the Numbers Grid, or to "Not yet accomplished" if not.
 
 **Starting Target List**
 
