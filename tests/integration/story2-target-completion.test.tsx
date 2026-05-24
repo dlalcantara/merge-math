@@ -27,56 +27,83 @@ function makeInitialState(overrides: Partial<GameState> = {}): GameState {
   }
 }
 
-describe('US2: Target Completion and Win', () => {
+async function generateNumber(genGrid: HTMLElement) {
+  // Click generator cell once to select, again to generate
+  const genBtn = within(genGrid).getAllByRole('button')[0]
+  await userEvent.click(genBtn)
+  await userEvent.click(genBtn)
+}
+
+describe('US2: Target Auto-Completion and Win', () => {
   beforeEach(() => {
     vi.restoreAllMocks()
   })
 
-  it('clicking an available target marks it accomplished, number stays in grid, score unchanged', async () => {
+  it('generating a matching number auto-accomplishes the target, number stays in grid, score increments once', async () => {
+    vi.spyOn(gameStateModule, 'generateInitialState').mockReturnValue(
+      makeInitialState({ generatorsGrid: [1, null, null, null] })
+    )
+    render(<GameBoard />)
+    const genGrid = screen.getByRole('grid', { name: /generators grid/i })
+    await generateNumber(genGrid)
+    const targetList = screen.getByRole('list', { name: /targets/i })
+    const target1 = within(targetList).getByText('1')
+    expect(target1.className).toContain('target-accomplished')
+    const numGrid = screen.getByRole('grid', { name: /numbers grid/i })
+    expect(within(numGrid).getByText('1')).toBeInTheDocument()
+    expect(screen.getByText(/action score:\s*1/i)).toBeInTheDocument()
+  })
+
+  it('targets are not interactive — clicking a target does not change state', async () => {
     vi.spyOn(gameStateModule, 'generateInitialState').mockReturnValue(
       makeInitialState({ numbersGrid: [1, null, null, null, null, null, null, null, null] })
     )
     render(<GameBoard />)
     const targetList = screen.getByRole('list', { name: /targets/i })
-    await userEvent.click(within(targetList).getByRole('button', { name: 'Claim target 1' }))
-    const numGrid = screen.getByRole('grid', { name: /numbers grid/i })
-    expect(within(numGrid).getByText('1')).toBeInTheDocument()
+    const target1 = within(targetList).getByText('1')
+    await userEvent.click(target1)
     expect(screen.getByText(/action score:\s*0/i)).toBeInTheDocument()
   })
 
-  it('clicking a target when all targets are accomplished shows win modal', async () => {
+  it('undo after auto-accomplish reverts target to pending', async () => {
+    vi.spyOn(gameStateModule, 'generateInitialState').mockReturnValue(
+      makeInitialState({ generatorsGrid: [1, null, null, null] })
+    )
+    render(<GameBoard />)
+    const genGrid = screen.getByRole('grid', { name: /generators grid/i })
+    await generateNumber(genGrid)
+    const targetList = screen.getByRole('list', { name: /targets/i })
+    expect(within(targetList).getByText('1').className).toContain('target-accomplished')
+    await userEvent.click(screen.getByRole('button', { name: /undo/i }))
+    expect(within(targetList).getByText('1').className).toContain('target-pending')
+    expect(screen.getByText(/action score:\s*0/i)).toBeInTheDocument()
+  })
+
+  it('all targets accomplished triggers win modal', async () => {
     vi.spyOn(gameStateModule, 'generateInitialState').mockReturnValue(
       makeInitialState({
-        numbersGrid: [1, null, null, null, null, null, null, null, null],
-        targets: [
-          { value: 1, accomplished: false },
-        ],
+        numbersGrid: Array(9).fill(null),
+        generatorsGrid: [1, null, null, null],
+        targets: [{ value: 1, accomplished: false }],
       })
     )
     render(<GameBoard />)
-    const targetList = screen.getByRole('list', { name: /targets/i })
-    await userEvent.click(within(targetList).getByRole('button', { name: 'Claim target 1' }))
+    const genGrid = screen.getByRole('grid', { name: /generators grid/i })
+    await generateNumber(genGrid)
     expect(screen.getByRole('dialog', { name: /you won/i })).toBeInTheDocument()
   })
 
-  it('clicking a target with no matching cell in numbersGrid changes nothing', async () => {
+  it('target remains accomplished after the matching number is later removed', async () => {
     vi.spyOn(gameStateModule, 'generateInitialState').mockReturnValue(
-      makeInitialState({ numbersGrid: Array(9).fill(null) })
+      makeInitialState({ generatorsGrid: [1, null, null, null] })
     )
     render(<GameBoard />)
+    const genGrid = screen.getByRole('grid', { name: /generators grid/i })
+    await generateNumber(genGrid)
     const targetList = screen.getByRole('list', { name: /targets/i })
-    await userEvent.click(within(targetList).getAllByRole('button')[0])
-    expect(screen.getByText(/action score:\s*0/i)).toBeInTheDocument()
-  })
-
-  it('undo after claiming a target reverts accomplished status', async () => {
-    vi.spyOn(gameStateModule, 'generateInitialState').mockReturnValue(
-      makeInitialState({ numbersGrid: [1, null, null, null, null, null, null, null, null] })
-    )
-    render(<GameBoard />)
-    const targetList = screen.getByRole('list', { name: /targets/i })
-    await userEvent.click(within(targetList).getByRole('button', { name: 'Claim target 1' }))
-    await userEvent.click(screen.getByRole('button', { name: /undo/i }))
-    expect(screen.getByText(/action score:\s*0/i)).toBeInTheDocument()
+    expect(within(targetList).getByText('1').className).toContain('target-accomplished')
+    window.confirm = vi.fn(() => true)
+    await userEvent.click(screen.getByRole('button', { name: /clear numbers/i }))
+    expect(within(targetList).getByText('1').className).toContain('target-accomplished')
   })
 })

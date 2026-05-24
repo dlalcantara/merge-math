@@ -122,11 +122,7 @@ export function GameBoard({ initialTargets }: GameBoardProps) {
         undoDisabled={store.history.length === 0}
       />
 
-      <TargetList
-        targets={current.targets}
-        numbersGrid={current.numbersGrid as (number | null)[]}
-        dispatch={dispatch}
-      />
+      <TargetList targets={current.targets} />
 
       <NumbersSection
         cells={current.numbersGrid}

@@ -9,11 +9,13 @@ function scored(store: GameStore, next: GameState): GameStore {
   }
 }
 
-function historical(store: GameStore, next: GameState): GameStore {
-  return {
-    current: next,
-    history: [...store.history, store.current],
-  }
+function withAutoAccomplish(state: GameState): GameState {
+  const targets = state.targets.map(t =>
+    !t.accomplished && state.numbersGrid.includes(t.value)
+      ? { ...t, accomplished: true }
+      : t
+  )
+  return { ...state, targets }
 }
 
 export function gameReducer(store: GameStore, action: GameAction): GameStore {
@@ -75,7 +77,7 @@ export function gameReducer(store: GameStore, action: GameAction): GameStore {
       if (emptyIdx === -1) return store
       const nums = [...current.numbersGrid]
       nums[emptyIdx] = current.generatorsGrid[current.selectedGeneratorsIdx]
-      return scored(store, { ...current, numbersGrid: nums })
+      return scored(store, withAutoAccomplish({ ...current, numbersGrid: nums }))
     }
 
     case 'MERGE_CELLS': {
@@ -86,12 +88,12 @@ export function gameReducer(store: GameStore, action: GameAction): GameStore {
       if (action.sourceGrid === 'numbers') {
         sourceGrid[action.sourceIdx] = null
         sourceGrid[action.targetIdx] = result
-        return scored(store, {
+        return scored(store, withAutoAccomplish({
           ...current,
           numbersGrid: sourceGrid,
           selectedNumbersIdx: null,
           selectedGeneratorsIdx: null,
-        })
+        }))
       }
       sourceGrid[action.sourceIdx] = null
       sourceGrid[action.targetIdx] = result
@@ -103,17 +105,6 @@ export function gameReducer(store: GameStore, action: GameAction): GameStore {
       })
     }
 
-    case 'CLAIM_TARGET': {
-      const idx = current.targets.findIndex(t => t.value === action.targetValue && !t.accomplished)
-      if (idx === -1) return store
-      const available = current.numbersGrid.some(v => v === action.targetValue)
-      if (!available) return store
-      const targets = current.targets.map((t, i) =>
-        i === idx ? { ...t, accomplished: true } : t
-      )
-      return historical(store, { ...current, targets })
-    }
-
     case 'MERGE_ALL_NUMBERS': {
       const op = current.activeOperator
       if (op !== '+' && op !== '*') return store
@@ -122,7 +113,7 @@ export function gameReducer(store: GameStore, action: GameAction): GameStore {
       const result = values.reduce((acc, v) => applyOperator(acc, v, op))
       const nums = Array(9).fill(null)
       nums[0] = result
-      return scored(store, { ...current, numbersGrid: nums, selectedNumbersIdx: null })
+      return scored(store, withAutoAccomplish({ ...current, numbersGrid: nums, selectedNumbersIdx: null }))
     }
 
     case 'CLEAR_NUMBERS_GRID':

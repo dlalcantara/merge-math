@@ -27,7 +27,6 @@ export interface GameStore {
 export type GameAction =
   | { type: 'GENERATE_NUMBER' }
   | { type: 'MERGE_CELLS'; sourceGrid: GridType; sourceIdx: number; targetIdx: number }
-  | { type: 'CLAIM_TARGET'; targetValue: number }
   | { type: 'MERGE_ALL_NUMBERS' }
   | { type: 'CLEAR_NUMBERS_GRID' }
   | { type: 'RESET_GENERATORS_GRID' }

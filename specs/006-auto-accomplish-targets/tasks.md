@@ -19,7 +19,7 @@
 
 No new project structure needed — all changes target existing files.
 
-- [ ] T001 Confirm all existing tests pass before any changes: `npm test` in project root
+- [x] T001 Confirm all existing tests pass before any changes: `npm test` in project root
 
 ---
 
@@ -29,7 +29,7 @@ No new project structure needed — all changes target existing files.
 
 **⚠️ CRITICAL**: All user story tasks depend on this change.
 
-- [ ] T002 Remove `{ type: 'CLAIM_TARGET'; targetValue: number }` variant from `GameAction` union in `src/engine/types.ts`
+- [x] T002 Remove `{ type: 'CLAIM_TARGET'; targetValue: number }` variant from `GameAction` union in `src/engine/types.ts`
 
 **Checkpoint**: TypeScript should now error on any remaining `CLAIM_TARGET` usages — those errors mark the exact lines to fix in Phase 3.
 
@@ -43,17 +43,17 @@ No new project structure needed — all changes target existing files.
 
 ### Tests for User Story 1 (TDD — write first, confirm red, then implement)
 
-- [ ] T003 [US1] Write failing unit tests covering `withAutoAccomplish` behaviour inside `GENERATE_NUMBER` (target auto-accomplishes; already-accomplished target stays accomplished; no action-count change) in `tests/unit/engine/reducer.test.ts`
-- [ ] T004 [P] [US1] Write failing unit tests covering auto-accomplish inside `MERGE_CELLS` for the numbers grid (result value matches a target → auto-accomplished) in `tests/unit/engine/reducer.test.ts`
-- [ ] T005 [P] [US1] Write failing unit tests covering auto-accomplish inside `MERGE_ALL_NUMBERS` (result matches a target → auto-accomplished) in `tests/unit/engine/reducer.test.ts`
+- [x] T003 [US1] Write failing unit tests covering `withAutoAccomplish` behaviour inside `GENERATE_NUMBER` (target auto-accomplishes; already-accomplished target stays accomplished; no action-count change) in `tests/unit/engine/reducer.test.ts`
+- [x] T004 [P] [US1] Write failing unit tests covering auto-accomplish inside `MERGE_CELLS` for the numbers grid (result value matches a target → auto-accomplished) in `tests/unit/engine/reducer.test.ts`
+- [x] T005 [P] [US1] Write failing unit tests covering auto-accomplish inside `MERGE_ALL_NUMBERS` (result matches a target → auto-accomplished) in `tests/unit/engine/reducer.test.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T006 [US1] Add `withAutoAccomplish(state: GameState): GameState` pure helper function to `src/engine/reducer.ts` (maps targets: if `!accomplished && numbersGrid.includes(value)` → mark accomplished)
-- [ ] T007 [US1] Apply `withAutoAccomplish` in the `GENERATE_NUMBER` case — wrap next state before passing to `scored()` in `src/engine/reducer.ts`
-- [ ] T008 [P] [US1] Apply `withAutoAccomplish` in the `MERGE_CELLS` (numbers branch) case — wrap next state before passing to `scored()` in `src/engine/reducer.ts`
-- [ ] T009 [P] [US1] Apply `withAutoAccomplish` in the `MERGE_ALL_NUMBERS` case — wrap next state before passing to `scored()` in `src/engine/reducer.ts`
-- [ ] T010 [US1] Remove the `case 'CLAIM_TARGET':` block entirely from `src/engine/reducer.ts`
+- [x] T006 [US1] Add `withAutoAccomplish(state: GameState): GameState` pure helper function to `src/engine/reducer.ts` (maps targets: if `!accomplished && numbersGrid.includes(value)` → mark accomplished)
+- [x] T007 [US1] Apply `withAutoAccomplish` in the `GENERATE_NUMBER` case — wrap next state before passing to `scored()` in `src/engine/reducer.ts`
+- [x] T008 [P] [US1] Apply `withAutoAccomplish` in the `MERGE_CELLS` (numbers branch) case — wrap next state before passing to `scored()` in `src/engine/reducer.ts`
+- [x] T009 [P] [US1] Apply `withAutoAccomplish` in the `MERGE_ALL_NUMBERS` case — wrap next state before passing to `scored()` in `src/engine/reducer.ts`
+- [x] T010 [US1] Remove the `case 'CLAIM_TARGET':` block entirely from `src/engine/reducer.ts`
 
 **Checkpoint**: T003–T005 tests must now be green. TypeScript compile errors from T002 must be resolved. `npm test` passes (some TargetList and integration tests will still fail — that is expected).
 
@@ -67,12 +67,12 @@ No new project structure needed — all changes target existing files.
 
 ### Tests for User Story 2 (TDD — write first, confirm red, then implement)
 
-- [ ] T011 [US2] Write failing unit test: `GENERATE_NUMBER` auto-accomplishes a target → `UNDO` reverts target to `accomplished: false` (one undo step, not two) in `tests/unit/engine/reducer.test.ts`
-- [ ] T012 [P] [US2] Write failing unit test: multiple targets auto-accomplished by a single `MERGE_CELLS` action → single `UNDO` reverts all of them simultaneously in `tests/unit/engine/reducer.test.ts`
+- [x] T011 [US2] Write failing unit test: `GENERATE_NUMBER` auto-accomplishes a target → `UNDO` reverts target to `accomplished: false` (one undo step, not two) in `tests/unit/engine/reducer.test.ts`
+- [x] T012 [P] [US2] Write failing unit test: multiple targets auto-accomplished by a single `MERGE_CELLS` action → single `UNDO` reverts all of them simultaneously in `tests/unit/engine/reducer.test.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T013 [US2] Verify the `UNDO` case in `src/engine/reducer.ts` — no code change required; confirm that restoring `history[history.length - 1]` automatically reverts auto-accomplished targets since target state is bundled in `scored()`. Add a one-line comment in the reducer only if the bundling is non-obvious to a future reader.
+- [x] T013 [US2] Verify the `UNDO` case in `src/engine/reducer.ts` — no code change required; confirm that restoring `history[history.length - 1]` automatically reverts auto-accomplished targets since target state is bundled in `scored()`. Add a one-line comment in the reducer only if the bundling is non-obvious to a future reader.
 
 **Checkpoint**: T011–T012 tests must now be green. All reducer tests pass.
 
@@ -86,13 +86,13 @@ No new project structure needed — all changes target existing files.
 
 ### Tests for User Story 3 (TDD — write first, confirm red, then implement)
 
-- [ ] T014 [US3] Rewrite `tests/unit/components/TargetList.test.tsx` with failing tests: pending target renders with `target-pending` class; accomplished target renders with `target-accomplished` class; no `<button>` element present; no `target-available` class appears; `numbersGrid` and `dispatch` props are gone
-- [ ] T015 [US3] Rewrite `tests/integration/story2-target-completion.test.tsx` with failing tests covering: (a) generate matching number → target auto-accomplishes, number stays in grid, score unchanged; (b) undo after auto-accomplish → target reverts; (c) all targets accomplished → win modal appears
+- [x] T014 [US3] Rewrite `tests/unit/components/TargetList.test.tsx` with failing tests: pending target renders with `target-pending` class; accomplished target renders with `target-accomplished` class; no `<button>` element present; no `target-available` class appears; `numbersGrid` and `dispatch` props are gone
+- [x] T015 [US3] Rewrite `tests/integration/story2-target-completion.test.tsx` with failing tests covering: (a) generate matching number → target auto-accomplishes, number stays in grid, score unchanged; (b) undo after auto-accomplish → target reverts; (c) all targets accomplished → win modal appears
 
 ### Implementation for User Story 3
 
-- [ ] T016 [US3] Rewrite `src/components/TargetList.tsx` — remove `numbersGrid`, `dispatch`, and `TargetStatus` type; remove `getStatus()`; render non-interactive `<span className={target.accomplished ? 'target-accomplished' : 'target-pending'}>` inside `<li>` for each target
-- [ ] T017 [US3] Update `src/components/GameBoard.tsx` — remove `numbersGrid` and `dispatch` props from the `<TargetList>` JSX element
+- [x] T016 [US3] Rewrite `src/components/TargetList.tsx` — remove `numbersGrid`, `dispatch`, and `TargetStatus` type; remove `getStatus()`; render non-interactive `<span className={target.accomplished ? 'target-accomplished' : 'target-pending'}>` inside `<li>` for each target
+- [x] T017 [US3] Update `src/components/GameBoard.tsx` — remove `numbersGrid` and `dispatch` props from the `<TargetList>` JSX element
 
 **Checkpoint**: All 5 test files pass. `npm test` exits green.
 
@@ -102,8 +102,8 @@ No new project structure needed — all changes target existing files.
 
 **Purpose**: Remove dead CSS; confirm full coverage gate.
 
-- [ ] T018 Remove the `.target-available { ... }` CSS rule from `src/styles/game.css` (dead style — no component emits this class after T016)
-- [ ] T019 Run `npm run test:coverage` and confirm all tests pass and coverage remains ≥ 80%
+- [x] T018 Remove the `.target-available { ... }` CSS rule from `src/styles/game.css` (dead style — no component emits this class after T016)
+- [x] T019 Run `npm run test:coverage` and confirm all tests pass and coverage remains ≥ 80%
 
 ---
 

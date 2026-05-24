@@ -294,52 +294,120 @@ describe('RESET_GENERATORS_GRID', () => {
   })
 })
 
-describe('CLAIM_TARGET (mark accomplished, no score)', () => {
-  it('marks the matching target accomplished', () => {
-    const store = makeStore({
-      numbersGrid: [1, null, null, null, null, null, null, null, null],
-    })
-    const next = gameReducer(store, { type: 'CLAIM_TARGET', targetValue: 1 })
+describe('GENERATE_NUMBER auto-accomplish', () => {
+  it('auto-accomplishes a target when generated number matches it', () => {
+    const store = makeStore({ generatorsGrid: [1, null, null, null], selectedGeneratorsIdx: 0 })
+    const next = gameReducer(store, { type: 'GENERATE_NUMBER' })
     expect(next.current.targets[0].accomplished).toBe(true)
   })
 
-  it('leaves the number in numbersGrid', () => {
-    const store = makeStore({
-      numbersGrid: [1, null, null, null, null, null, null, null, null],
-    })
-    const next = gameReducer(store, { type: 'CLAIM_TARGET', targetValue: 1 })
+  it('leaves the number in numbersGrid after auto-accomplish', () => {
+    const store = makeStore({ generatorsGrid: [1, null, null, null], selectedGeneratorsIdx: 0 })
+    const next = gameReducer(store, { type: 'GENERATE_NUMBER' })
     expect(next.current.numbersGrid[0]).toBe(1)
   })
 
-  it('does not increment actionScore', () => {
-    const store = makeStore({
-      numbersGrid: [1, null, null, null, null, null, null, null, null],
-    })
-    const next = gameReducer(store, { type: 'CLAIM_TARGET', targetValue: 1 })
-    expect(next.current.actionScore).toBe(0)
+  it('does not increment actionScore for the auto-accomplish (score only increments once for the generate action)', () => {
+    const store = makeStore({ generatorsGrid: [1, null, null, null], selectedGeneratorsIdx: 0 })
+    const next = gameReducer(store, { type: 'GENERATE_NUMBER' })
+    expect(next.current.actionScore).toBe(1)
   })
 
-  it('pushes to history (undoable)', () => {
+  it('does not auto-accomplish an already-accomplished target', () => {
     const store = makeStore({
-      numbersGrid: [1, null, null, null, null, null, null, null, null],
+      generatorsGrid: [1, null, null, null],
+      selectedGeneratorsIdx: 0,
+      targets: [{ value: 1, accomplished: true }, { value: 2, accomplished: false }],
     })
-    const next = gameReducer(store, { type: 'CLAIM_TARGET', targetValue: 1 })
-    expect(next.history).toHaveLength(1)
+    const next = gameReducer(store, { type: 'GENERATE_NUMBER' })
+    expect(next.current.targets[0].accomplished).toBe(true)
+    expect(next.current.targets[1].accomplished).toBe(false)
   })
 
-  it('undo reverts accomplished status', () => {
+  it('does not auto-accomplish a target whose value is not generated', () => {
+    const store = makeStore({ generatorsGrid: [3, null, null, null], selectedGeneratorsIdx: 0 })
+    const next = gameReducer(store, { type: 'GENERATE_NUMBER' })
+    expect(next.current.targets.every(t => !t.accomplished)).toBe(true)
+  })
+})
+
+describe('MERGE_CELLS auto-accomplish', () => {
+  it('auto-accomplishes a target when merge result matches it', () => {
+    // 1 + 1 = 2; target value 2 should auto-accomplish
     const store = makeStore({
-      numbersGrid: [1, null, null, null, null, null, null, null, null],
+      numbersGrid: [1, 1, null, null, null, null, null, null, null],
+      activeOperator: '+',
+      selectedNumbersIdx: 0,
     })
-    const claimed = gameReducer(store, { type: 'CLAIM_TARGET', targetValue: 1 })
-    const undone = gameReducer(claimed, { type: 'UNDO' })
+    const next = gameReducer(store, { type: 'MERGE_CELLS', sourceGrid: 'numbers', sourceIdx: 0, targetIdx: 1 })
+    const target2 = next.current.targets.find(t => t.value === 2)
+    expect(target2?.accomplished).toBe(true)
+  })
+
+  it('does not auto-accomplish a target when merge result does not match', () => {
+    // 3 + 3 = 6; no target with value 6
+    const store = makeStore({
+      numbersGrid: [3, 3, null, null, null, null, null, null, null],
+      activeOperator: '+',
+      selectedNumbersIdx: 0,
+    })
+    const next = gameReducer(store, { type: 'MERGE_CELLS', sourceGrid: 'numbers', sourceIdx: 0, targetIdx: 1 })
+    expect(next.current.targets.every(t => !t.accomplished)).toBe(true)
+  })
+})
+
+describe('MERGE_ALL_NUMBERS auto-accomplish', () => {
+  it('auto-accomplishes a target when merge-all result matches it', () => {
+    // 1 + 1 + 0 (filtered) = sums to 2; but simpler: just 1 + 1 = 2, target 2 accomplishes
+    const store = makeStore({
+      numbersGrid: [1, 1, null, null, null, null, null, null, null],
+      activeOperator: '+',
+    })
+    const next = gameReducer(store, { type: 'MERGE_ALL_NUMBERS' })
+    const target2 = next.current.targets.find(t => t.value === 2)
+    expect(target2?.accomplished).toBe(true)
+  })
+
+  it('does not auto-accomplish when merge-all result does not match any target', () => {
+    // 3 + 3 = 6; no target with value 6
+    const store = makeStore({
+      numbersGrid: [3, 3, null, null, null, null, null, null, null],
+      activeOperator: '+',
+    })
+    const next = gameReducer(store, { type: 'MERGE_ALL_NUMBERS' })
+    expect(next.current.targets.every(t => !t.accomplished)).toBe(true)
+  })
+})
+
+describe('UNDO reverts auto-accomplished targets', () => {
+  it('single UNDO after GENERATE_NUMBER reverts auto-accomplished target', () => {
+    const store = makeStore({ generatorsGrid: [1, null, null, null], selectedGeneratorsIdx: 0 })
+    const generated = gameReducer(store, { type: 'GENERATE_NUMBER' })
+    expect(generated.current.targets[0].accomplished).toBe(true)
+    const undone = gameReducer(generated, { type: 'UNDO' })
     expect(undone.current.targets[0].accomplished).toBe(false)
   })
 
-  it('returns unchanged store when number is not in numbersGrid', () => {
-    const store = makeStore()
-    const next = gameReducer(store, { type: 'CLAIM_TARGET', targetValue: 1 })
-    expect(next).toBe(store)
+  it('single UNDO after MERGE_CELLS reverts auto-accomplished target', () => {
+    // 1 + 1 = 2 → target(2) accomplished
+    const store = makeStore({
+      numbersGrid: [1, 1, null, null, null, null, null, null, null],
+      activeOperator: '+',
+      selectedNumbersIdx: 0,
+    })
+    const merged = gameReducer(store, { type: 'MERGE_CELLS', sourceGrid: 'numbers', sourceIdx: 0, targetIdx: 1 })
+    expect(merged.current.targets.find(t => t.value === 2)?.accomplished).toBe(true)
+    const undone = gameReducer(merged, { type: 'UNDO' })
+    expect(undone.current.targets.find(t => t.value === 2)?.accomplished).toBe(false)
+  })
+
+  it('removing a number after auto-accomplish does not revert the accomplished target', () => {
+    const store = makeStore({ generatorsGrid: [1, null, null, null], selectedGeneratorsIdx: 0 })
+    const generated = gameReducer(store, { type: 'GENERATE_NUMBER' })
+    expect(generated.current.targets[0].accomplished).toBe(true)
+    // Clear the number — target should remain accomplished (not rely on number being present)
+    const cleared = gameReducer(generated, { type: 'CLEAR_NUMBERS_GRID' })
+    expect(cleared.current.targets[0].accomplished).toBe(true)
   })
 })
 
