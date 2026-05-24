@@ -1,20 +1,35 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { GameBoard } from '../../src/components/GameBoard'
+import * as gameStateModule from '../../src/engine/gameState'
+import type { GameState } from '../../src/engine/types'
+
+function makeInitialState(overrides: Partial<GameState> = {}): GameState {
+  return {
+    numbersGrid: Array(9).fill(null),
+    generatorsGrid: [1, null, null, null],
+    targets: [
+      { value: 1, accomplished: false },
+      { value: 2, accomplished: false },
+      { value: 5, accomplished: false },
+      { value: 12, accomplished: false },
+      { value: 25, accomplished: false },
+      { value: 67, accomplished: false },
+      { value: 69, accomplished: false },
+      { value: -420, accomplished: false },
+    ],
+    activeOperator: '+',
+    actionScore: 0,
+    selectedNumbersIdx: null,
+    selectedGeneratorsIdx: null,
+    ...overrides,
+  }
+}
 
 describe('US1: Core Grid Interaction', () => {
-  it('generates a generator — places value 1 in generators grid and increments score', async () => {
-    render(<GameBoard />)
-    const genButton = screen.getByRole('button', { name: /generate generator/i })
-    await userEvent.click(genButton)
-    // generatorsGrid starts with [1, null, null, null]; after GENERATE_GENERATOR, index 1 = 1
-    const genGrid = screen.getByRole('grid', { name: /generators grid/i })
-    const cells = within(genGrid).getAllByRole('button')
-    // At least 2 cells should show "1"
-    const filledCells = cells.filter(c => c.textContent === '1')
-    expect(filledCells.length).toBeGreaterThanOrEqual(2)
-    expect(screen.getByText(/action score:\s*1/i)).toBeInTheDocument()
+  beforeEach(() => {
+    vi.restoreAllMocks()
   })
 
   it('clicking an already-selected generator copies its value to numbers grid', async () => {
@@ -57,23 +72,22 @@ describe('US1: Core Grid Interaction', () => {
     expect(screen.getByText(/action score:\s*3/i)).toBeInTheDocument()
   })
 
-  it('merges two generators using active operator', async () => {
+  it('clicking a second generator when one is selected re-selects it without merging (US2)', async () => {
+    vi.spyOn(gameStateModule, 'generateInitialState').mockReturnValue(
+      makeInitialState({ generatorsGrid: [3, 5, null, null] })
+    )
     render(<GameBoard />)
-    // Generate a second generator so both index 0 and 1 are filled (both value 1)
-    const genButton = screen.getByRole('button', { name: /generate generator/i })
-    await userEvent.click(genButton)
-    // Score is 1 after generating
     const genGrid = screen.getByRole('grid', { name: /generators grid/i })
     const genCells = () => within(genGrid).getAllByRole('button')
-    // Select index 0, then click index 1 to merge (1+1=2)
     await userEvent.click(genCells()[0])
+    expect(genCells()[0]).toHaveAttribute('aria-pressed', 'true')
     await userEvent.click(genCells()[1])
-    // Source (index 0) should be empty, target (index 1) should show 2
-    const cells = genCells()
-    expect(cells[1].textContent).toBe('2')
-    expect(cells[0].textContent).toBe('')
-    // Score: 1 (generate) + 1 (merge) = 2
-    expect(screen.getByText(/action score:\s*2/i)).toBeInTheDocument()
+    // Re-selection: first deselected, second selected, values unchanged, no score
+    expect(genCells()[0]).toHaveAttribute('aria-pressed', 'false')
+    expect(genCells()[1]).toHaveAttribute('aria-pressed', 'true')
+    expect(genCells()[0].textContent).toBe('3')
+    expect(genCells()[1].textContent).toBe('5')
+    expect(screen.getByText(/action score:\s*0/i)).toBeInTheDocument()
   })
 
   it('generator remains selected after copying its value to Numbers Grid', async () => {

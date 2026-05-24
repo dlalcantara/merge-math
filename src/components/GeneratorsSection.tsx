@@ -4,18 +4,14 @@ interface GeneratorsSectionProps {
   cells: (number | null)[]
   selectedIdx: number | null
   onCellClick: (idx: number) => void
-  onGenerateGenerator: () => void
-  onClearGenerators: () => void
-  generateDisabled: boolean
+  onResetGenerators: () => void
 }
 
 export function GeneratorsSection({
   cells,
   selectedIdx,
   onCellClick,
-  onGenerateGenerator,
-  onClearGenerators,
-  generateDisabled,
+  onResetGenerators,
 }: GeneratorsSectionProps) {
   return (
     <section aria-label="Generators Grid section" data-testid="generators-section">
@@ -28,14 +24,7 @@ export function GeneratorsSection({
         onCellClick={onCellClick}
       />
       <div className="action-buttons" style={{ marginTop: 'var(--spacing-sm)' }}>
-        <button
-          onClick={onGenerateGenerator}
-          disabled={generateDisabled}
-          aria-disabled={generateDisabled}
-        >
-          Generate Generator
-        </button>
-        <button onClick={onClearGenerators}>Clear Generators Grid</button>
+        <button onClick={onResetGenerators}>Reset Generators Grid</button>
       </div>
     </section>
   )

@@ -16,4 +16,21 @@ describe('App setup-to-game flow', () => {
     expect(screen.queryByRole('button', { name: /start game/i })).not.toBeInTheDocument()
     expect(screen.getByRole('grid', { name: /numbers grid/i })).toBeInTheDocument()
   })
+
+  it('shows 8 tutorial target inputs by default (US5)', () => {
+    render(<App />)
+    expect(screen.getAllByRole('spinbutton')).toHaveLength(8)
+  })
+
+  it('Randomize replaces values and game starts with randomized targets (US5)', async () => {
+    render(<App />)
+    const inputsBefore = screen.getAllByRole('spinbutton').map(i => (i as HTMLInputElement).value)
+    await userEvent.click(screen.getByRole('button', { name: /randomize/i }))
+    const inputsAfter = screen.getAllByRole('spinbutton').map(i => (i as HTMLInputElement).value)
+    // Values changed after randomize
+    expect(inputsAfter).not.toEqual(inputsBefore)
+    // Game starts with randomized values
+    await userEvent.click(screen.getByRole('button', { name: /start game/i }))
+    expect(screen.getByRole('grid', { name: /numbers grid/i })).toBeInTheDocument()
+  })
 })

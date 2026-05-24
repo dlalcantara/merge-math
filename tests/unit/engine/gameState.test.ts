@@ -1,41 +1,22 @@
 import { describe, it, expect } from 'vitest'
-import { generateTargets, generateInitialState } from '../../../src/engine/gameState'
+import { generateInitialState, generateRandomTargets } from '../../../src/engine/gameState'
 
-describe('generateTargets', () => {
-  it('returns exactly 10 values', () => {
-    expect(generateTargets()).toHaveLength(10)
+describe('generateRandomTargets', () => {
+  it('returns exactly 8 values', () => {
+    expect(generateRandomTargets()).toHaveLength(8)
   })
 
   it('returns unique values', () => {
-    const targets = generateTargets()
-    const unique = new Set(targets)
-    expect(unique.size).toBe(10)
+    const targets = generateRandomTargets()
+    expect(new Set(targets).size).toBe(8)
   })
 
   it('returns values in range [-1023, 1024]', () => {
-    const targets = generateTargets()
-    targets.forEach(v => {
-      expect(v).toBeGreaterThanOrEqual(-1023)
-      expect(v).toBeLessThanOrEqual(1024)
-    })
-  })
-
-  it('sorts by ascending |value|', () => {
-    const targets = generateTargets()
-    for (let i = 1; i < targets.length; i++) {
-      expect(Math.abs(targets[i])).toBeGreaterThanOrEqual(Math.abs(targets[i - 1]))
-    }
-  })
-
-  it('places positive before negative when |value| is tied', () => {
-    // Run multiple times to catch tie-breaking
-    for (let run = 0; run < 20; run++) {
-      const targets = generateTargets()
-      for (let i = 1; i < targets.length; i++) {
-        if (Math.abs(targets[i]) === Math.abs(targets[i - 1])) {
-          expect(targets[i - 1]).toBeGreaterThan(targets[i])
-        }
-      }
+    for (let run = 0; run < 10; run++) {
+      generateRandomTargets().forEach(v => {
+        expect(v).toBeGreaterThanOrEqual(-1023)
+        expect(v).toBeLessThanOrEqual(1024)
+      })
     }
   })
 })
@@ -54,8 +35,17 @@ describe('generateInitialState', () => {
     expect(state.generatorsGrid.slice(1).every(v => v === null)).toBe(true)
   })
 
-  it('targets has 10 entries', () => {
-    expect(generateInitialState().targets).toHaveLength(10)
+  it('targets has 8 entries', () => {
+    expect(generateInitialState().targets).toHaveLength(8)
+  })
+
+  it('targets use DEFAULT_TARGETS values [1,2,5,12,25,67,69,-420]', () => {
+    const state = generateInitialState()
+    expect(state.targets.map(t => t.value)).toEqual([1, 2, 5, 12, 25, 67, 69, -420])
+  })
+
+  it('targets have accomplished: false by default', () => {
+    expect(generateInitialState().targets.every(t => t.accomplished === false)).toBe(true)
   })
 
   it('activeOperator is +', () => {

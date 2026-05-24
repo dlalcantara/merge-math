@@ -6,7 +6,16 @@ function makeStore(overrides: Partial<GameState> = {}): GameStore {
   const base: GameState = {
     numbersGrid: Array(9).fill(null),
     generatorsGrid: [1, null, null, null],
-    targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    targets: [
+      { value: 1, accomplished: false },
+      { value: 2, accomplished: false },
+      { value: 5, accomplished: false },
+      { value: 12, accomplished: false },
+      { value: 25, accomplished: false },
+      { value: 67, accomplished: false },
+      { value: 69, accomplished: false },
+      { value: -420, accomplished: false },
+    ],
     activeOperator: '+',
     actionScore: 0,
     selectedNumbersIdx: null,
@@ -14,33 +23,6 @@ function makeStore(overrides: Partial<GameState> = {}): GameStore {
   }
   return { current: { ...base, ...overrides }, history: [] }
 }
-
-describe('GENERATE_GENERATOR', () => {
-  it('places 1 in the first null slot of generatorsGrid', () => {
-    const store = makeStore({ generatorsGrid: [1, null, null, null] })
-    const next = gameReducer(store, { type: 'GENERATE_GENERATOR' })
-    expect(next.current.generatorsGrid[1]).toBe(1)
-  })
-
-  it('increments actionScore by 1', () => {
-    const store = makeStore({ generatorsGrid: [1, null, null, null] })
-    const next = gameReducer(store, { type: 'GENERATE_GENERATOR' })
-    expect(next.current.actionScore).toBe(1)
-  })
-
-  it('pushes a deep copy to history', () => {
-    const store = makeStore({ generatorsGrid: [1, null, null, null] })
-    const next = gameReducer(store, { type: 'GENERATE_GENERATOR' })
-    expect(next.history).toHaveLength(1)
-    expect(next.history[0]).not.toBe(next.current)
-  })
-
-  it('returns unchanged store when generatorsGrid is full', () => {
-    const store = makeStore({ generatorsGrid: [1, 2, 3, 4] })
-    const next = gameReducer(store, { type: 'GENERATE_GENERATOR' })
-    expect(next).toBe(store)
-  })
-})
 
 describe('GENERATE_NUMBER', () => {
   it('copies selected generator value to first null numbersGrid slot', () => {
@@ -201,6 +183,163 @@ describe('MERGE_CELLS', () => {
     })
     const next = gameReducer(store, { type: 'MERGE_CELLS', sourceGrid: 'numbers', sourceIdx: 0, targetIdx: 1 })
     expect(next.current.selectedNumbersIdx).toBeNull()
+  })
+})
+
+describe('CONVERT_TO_GENERATOR', () => {
+  it('moves selected number to first empty generator slot', () => {
+    const store = makeStore({
+      numbersGrid: [7, null, null, null, null, null, null, null, null],
+      generatorsGrid: [1, null, null, null],
+      selectedNumbersIdx: 0,
+    })
+    const next = gameReducer(store, { type: 'CONVERT_TO_GENERATOR' })
+    expect(next.current.numbersGrid[0]).toBeNull()
+    expect(next.current.generatorsGrid[1]).toBe(7)
+  })
+
+  it('increments actionScore by 1', () => {
+    const store = makeStore({
+      numbersGrid: [7, null, null, null, null, null, null, null, null],
+      generatorsGrid: [1, null, null, null],
+      selectedNumbersIdx: 0,
+    })
+    const next = gameReducer(store, { type: 'CONVERT_TO_GENERATOR' })
+    expect(next.current.actionScore).toBe(1)
+  })
+
+  it('pushes to history', () => {
+    const store = makeStore({
+      numbersGrid: [7, null, null, null, null, null, null, null, null],
+      generatorsGrid: [1, null, null, null],
+      selectedNumbersIdx: 0,
+    })
+    const next = gameReducer(store, { type: 'CONVERT_TO_GENERATOR' })
+    expect(next.history).toHaveLength(1)
+  })
+
+  it('undo restores the number and removes the generator', () => {
+    const store = makeStore({
+      numbersGrid: [7, null, null, null, null, null, null, null, null],
+      generatorsGrid: [1, null, null, null],
+      selectedNumbersIdx: 0,
+    })
+    const converted = gameReducer(store, { type: 'CONVERT_TO_GENERATOR' })
+    const undone = gameReducer(converted, { type: 'UNDO' })
+    expect(undone.current.numbersGrid[0]).toBe(7)
+    expect(undone.current.generatorsGrid[1]).toBeNull()
+  })
+
+  it('clears selectedNumbersIdx after converting', () => {
+    const store = makeStore({
+      numbersGrid: [7, null, null, null, null, null, null, null, null],
+      generatorsGrid: [1, null, null, null],
+      selectedNumbersIdx: 0,
+    })
+    const next = gameReducer(store, { type: 'CONVERT_TO_GENERATOR' })
+    expect(next.current.selectedNumbersIdx).toBeNull()
+  })
+
+  it('returns unchanged store when selectedNumbersIdx is null', () => {
+    const store = makeStore({
+      numbersGrid: [7, null, null, null, null, null, null, null, null],
+      generatorsGrid: [1, null, null, null],
+      selectedNumbersIdx: null,
+    })
+    const next = gameReducer(store, { type: 'CONVERT_TO_GENERATOR' })
+    expect(next).toBe(store)
+  })
+
+  it('returns unchanged store when generatorsGrid is full', () => {
+    const store = makeStore({
+      numbersGrid: [7, null, null, null, null, null, null, null, null],
+      generatorsGrid: [1, 2, 3, 4],
+      selectedNumbersIdx: 0,
+    })
+    const next = gameReducer(store, { type: 'CONVERT_TO_GENERATOR' })
+    expect(next).toBe(store)
+  })
+})
+
+describe('RESET_GENERATORS_GRID', () => {
+  it('resets generatorsGrid to [1, null, null, null]', () => {
+    const store = makeStore({ generatorsGrid: [3, 5, 7, 9] })
+    const next = gameReducer(store, { type: 'RESET_GENERATORS_GRID' })
+    expect(next.current.generatorsGrid).toEqual([1, null, null, null])
+  })
+
+  it('increments actionScore by 1', () => {
+    const store = makeStore({ generatorsGrid: [3, 5, 7, 9] })
+    const next = gameReducer(store, { type: 'RESET_GENERATORS_GRID' })
+    expect(next.current.actionScore).toBe(1)
+  })
+
+  it('pushes to history', () => {
+    const store = makeStore({ generatorsGrid: [3, 5, 7, 9] })
+    const next = gameReducer(store, { type: 'RESET_GENERATORS_GRID' })
+    expect(next.history).toHaveLength(1)
+  })
+
+  it('undo restores previous generators', () => {
+    const store = makeStore({ generatorsGrid: [3, 5, 7, 9] })
+    const reset = gameReducer(store, { type: 'RESET_GENERATORS_GRID' })
+    const undone = gameReducer(reset, { type: 'UNDO' })
+    expect(undone.current.generatorsGrid).toEqual([3, 5, 7, 9])
+  })
+
+  it('clears selectedGeneratorsIdx', () => {
+    const store = makeStore({ generatorsGrid: [3, 5, 7, 9], selectedGeneratorsIdx: 0 })
+    const next = gameReducer(store, { type: 'RESET_GENERATORS_GRID' })
+    expect(next.current.selectedGeneratorsIdx).toBeNull()
+  })
+})
+
+describe('CLAIM_TARGET (mark accomplished, no score)', () => {
+  it('marks the matching target accomplished', () => {
+    const store = makeStore({
+      numbersGrid: [1, null, null, null, null, null, null, null, null],
+    })
+    const next = gameReducer(store, { type: 'CLAIM_TARGET', targetValue: 1 })
+    expect(next.current.targets[0].accomplished).toBe(true)
+  })
+
+  it('leaves the number in numbersGrid', () => {
+    const store = makeStore({
+      numbersGrid: [1, null, null, null, null, null, null, null, null],
+    })
+    const next = gameReducer(store, { type: 'CLAIM_TARGET', targetValue: 1 })
+    expect(next.current.numbersGrid[0]).toBe(1)
+  })
+
+  it('does not increment actionScore', () => {
+    const store = makeStore({
+      numbersGrid: [1, null, null, null, null, null, null, null, null],
+    })
+    const next = gameReducer(store, { type: 'CLAIM_TARGET', targetValue: 1 })
+    expect(next.current.actionScore).toBe(0)
+  })
+
+  it('pushes to history (undoable)', () => {
+    const store = makeStore({
+      numbersGrid: [1, null, null, null, null, null, null, null, null],
+    })
+    const next = gameReducer(store, { type: 'CLAIM_TARGET', targetValue: 1 })
+    expect(next.history).toHaveLength(1)
+  })
+
+  it('undo reverts accomplished status', () => {
+    const store = makeStore({
+      numbersGrid: [1, null, null, null, null, null, null, null, null],
+    })
+    const claimed = gameReducer(store, { type: 'CLAIM_TARGET', targetValue: 1 })
+    const undone = gameReducer(claimed, { type: 'UNDO' })
+    expect(undone.current.targets[0].accomplished).toBe(false)
+  })
+
+  it('returns unchanged store when number is not in numbersGrid', () => {
+    const store = makeStore()
+    const next = gameReducer(store, { type: 'CLAIM_TARGET', targetValue: 1 })
+    expect(next).toBe(store)
   })
 })
 

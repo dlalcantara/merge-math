@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { generateTargets } from '../engine/gameState'
+import { DEFAULT_TARGETS, generateRandomTargets } from '../engine/gameState'
 
 interface SetupScreenProps {
   onStart: (targets: number[]) => void
@@ -15,9 +15,9 @@ function validateField(raw: string): string {
 
 export function SetupScreen({ onStart }: SetupScreenProps) {
   const [values, setValues] = useState<string[]>(() =>
-    generateTargets().map(String)
+    DEFAULT_TARGETS.map(String)
   )
-  const [touched, setTouched] = useState<boolean[]>(() => Array(10).fill(false))
+  const [touched, setTouched] = useState<boolean[]>(() => Array(8).fill(false))
 
   const errors = values.map(validateField)
   const hasErrors = errors.some(e => e !== '')
@@ -28,6 +28,11 @@ export function SetupScreen({ onStart }: SetupScreenProps) {
 
   function handleBlur(idx: number) {
     setTouched(prev => prev.map((t, i) => (i === idx ? true : t)))
+  }
+
+  function handleRandomize() {
+    setValues(generateRandomTargets().map(String))
+    setTouched(Array(8).fill(false))
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -61,6 +66,9 @@ export function SetupScreen({ onStart }: SetupScreenProps) {
           ))}
         </div>
         <div className="action-buttons" style={{ marginTop: 'var(--spacing-lg)' }}>
+          <button type="button" onClick={handleRandomize}>
+            Randomize
+          </button>
           <button type="submit" disabled={hasErrors} aria-disabled={hasErrors}>
             Start Game
           </button>

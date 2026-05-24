@@ -19,7 +19,7 @@
 
 **Purpose**: Confirm the existing test suite is green before any changes land.
 
-- [ ] T001 Run `npm test` and record the passing count — no changes yet; this count is the floor that must never drop
+- [X] T001 Run `npm test` and record the passing count — no changes yet; this count is the floor that must never drop
 
 ---
 
@@ -29,13 +29,13 @@
 
 **⚠️ CRITICAL**: Changing `targets: number[]` → `targets: Target[]` in `src/engine/types.ts` will immediately cause compile errors in `TargetList.tsx`, `GameBoard.tsx`, and existing integration tests. Tasks T007 and T008 repair those errors before feature work begins.
 
-- [ ] T002 [P] Write failing unit tests for `CONVERT_TO_GENERATOR` (creates generator, removes number, increments score, undoable), `RESET_GENERATORS_GRID` (resets to [1,null,null,null], increments score, undoable), updated `CLAIM_TARGET` (marks accomplished without removing number, no score change, uses `historical()`, undoable), and `historical()` helper in `tests/unit/engine/reducer.test.ts`
-- [ ] T003 [P] Write failing unit tests asserting `generateRandomTargets()` returns exactly 8 numbers each in range −1023..1024, and `generateInitialState()` produces `targets` as `Target[]` with values [1,2,5,12,25,67,69,−420] and `accomplished: false` in `tests/unit/engine/gameState.test.ts`
-- [ ] T004 Update `src/engine/types.ts`: add `Target { value: number; accomplished: boolean }` interface; change `GameState.targets` from `number[]` to `Target[]`; add `CONVERT_TO_GENERATOR` and `RESET_GENERATORS_GRID` to `GameAction`; remove `GENERATE_GENERATOR` and `CLEAR_GENERATORS_GRID` from `GameAction`
-- [ ] T005 Update `src/engine/gameState.ts`: add `DEFAULT_TARGETS` constant `[1,2,5,12,25,67,69,-420]`; add `generateRandomTargets()` (8 unique values, −1023..1024, sorted by absolute value); update `generateInitialState()` to produce `targets: Target[]` from DEFAULT_TARGETS; remove old `generateTargets()` (depends on T004)
-- [ ] T006 Update `src/engine/reducer.ts`: add `historical()` helper; implement `CONVERT_TO_GENERATOR` case (find first empty generator slot, move value, use `scored()`); implement `RESET_GENERATORS_GRID` case (reset to `[1,null,null,null]`, use `scored()`); update `CLAIM_TARGET` to mark `target.accomplished = true` using `historical()` (no number removal, no score change); remove `GENERATE_GENERATOR` case (depends on T004, T005)
-- [ ] T007 Fix compile errors from `Target[]` change: update `src/components/TargetList.tsx` — change props to accept `targets: Target[]` and `numbersGrid: (number|null)[]`; render `target.value`; dispatch `CLAIM_TARGET` with `targetValue: target.value` on click (full three-state styling is US4); update `src/components/GameBoard.tsx` — change `isWon` to `current.targets.every(t => t.accomplished)`; pass `numbersGrid={current.numbersGrid}` to `TargetList` (depends on T004, T006)
-- [ ] T008 Update existing integration tests that break due to `Target[]` change: in `tests/integration/story2-target-completion.test.tsx` replace `targets: number[]` with `targets: Target[]` format, update assertions that previously checked targets were removed from the array (they are now marked `accomplished: true` instead) (depends on T006, T007)
+- [X] T002 [P] Write failing unit tests for `CONVERT_TO_GENERATOR` (creates generator, removes number, increments score, undoable), `RESET_GENERATORS_GRID` (resets to [1,null,null,null], increments score, undoable), updated `CLAIM_TARGET` (marks accomplished without removing number, no score change, uses `historical()`, undoable), and `historical()` helper in `tests/unit/engine/reducer.test.ts`
+- [X] T003 [P] Write failing unit tests asserting `generateRandomTargets()` returns exactly 8 numbers each in range −1023..1024, and `generateInitialState()` produces `targets` as `Target[]` with values [1,2,5,12,25,67,69,−420] and `accomplished: false` in `tests/unit/engine/gameState.test.ts`
+- [X] T004 Update `src/engine/types.ts`: add `Target { value: number; accomplished: boolean }` interface; change `GameState.targets` from `number[]` to `Target[]`; add `CONVERT_TO_GENERATOR` and `RESET_GENERATORS_GRID` to `GameAction`; remove `GENERATE_GENERATOR` and `CLEAR_GENERATORS_GRID` from `GameAction`
+- [X] T005 Update `src/engine/gameState.ts`: add `DEFAULT_TARGETS` constant `[1,2,5,12,25,67,69,-420]`; add `generateRandomTargets()` (8 unique values, −1023..1024, sorted by absolute value); update `generateInitialState()` to produce `targets: Target[]` from DEFAULT_TARGETS; remove old `generateTargets()` (depends on T004)
+- [X] T006 Update `src/engine/reducer.ts`: add `historical()` helper; implement `CONVERT_TO_GENERATOR` case (find first empty generator slot, move value, use `scored()`); implement `RESET_GENERATORS_GRID` case (reset to `[1,null,null,null]`, use `scored()`); update `CLAIM_TARGET` to mark `target.accomplished = true` using `historical()` (no number removal, no score change); remove `GENERATE_GENERATOR` case (depends on T004, T005)
+- [X] T007 Fix compile errors from `Target[]` change: update `src/components/TargetList.tsx` — change props to accept `targets: Target[]` and `numbersGrid: (number|null)[]`; render `target.value`; dispatch `CLAIM_TARGET` with `targetValue: target.value` on click (full three-state styling is US4); update `src/components/GameBoard.tsx` — change `isWon` to `current.targets.every(t => t.accomplished)`; pass `numbersGrid={current.numbersGrid}` to `TargetList` (depends on T004, T006)
+- [X] T008 Update existing integration tests that break due to `Target[]` change: in `tests/integration/story2-target-completion.test.tsx` replace `targets: number[]` with `targets: Target[]` format, update assertions that previously checked targets were removed from the array (they are now marked `accomplished: true` instead) (depends on T006, T007)
 
 **Checkpoint**: `npm test` — T002 and T003 unit tests pass; all previously-passing tests still pass; `npm run typecheck` reports no errors.
 
@@ -47,10 +47,10 @@
 
 **Independent Test**: Select a number → click "Convert to Generator" → number absent from Numbers Grid, generator present in Generators Grid, action score +1. Undo → number restored, generator gone, score −1.
 
-- [ ] T009 Write failing unit tests for `NumbersSection` in `tests/unit/components/NumbersSection.test.tsx`: "Convert to Generator" button is rendered between Merge All Numbers and Clear Numbers Grid; button has `disabled` attribute when `convertDisabled` is true
-- [ ] T010 Write failing integration test for US1 in `tests/integration/story5-v030-enhancements.test.tsx`: select a number, click "Convert to Generator", assert number removed and generator created with correct value and score incremented; then undo and assert revert
-- [ ] T011 [P] Update `src/components/NumbersSection.tsx`: add `onConvertToGenerator: () => void` and `convertDisabled: boolean` props; insert "Convert to Generator" button between "Merge All Numbers" and "Clear Numbers Grid" in the toolbar; apply `disabled` and `aria-disabled` from `convertDisabled` (depends on T009)
-- [ ] T012 Update `src/components/GameBoard.tsx`: add `handleConvertToGenerator` dispatching `CONVERT_TO_GENERATOR`; compute `convertDisabled = current.selectedNumbersIdx === null`; pass `onConvertToGenerator` and `convertDisabled` to `NumbersSection` (depends on T006, T011)
+- [X] T009 Write failing unit tests for `NumbersSection` in `tests/unit/components/NumbersSection.test.tsx`: "Convert to Generator" button is rendered between Merge All Numbers and Clear Numbers Grid; button has `disabled` attribute when `convertDisabled` is true
+- [X] T010 Write failing integration test for US1 in `tests/integration/story5-v030-enhancements.test.tsx`: select a number, click "Convert to Generator", assert number removed and generator created with correct value and score incremented; then undo and assert revert
+- [X] T011 [P] Update `src/components/NumbersSection.tsx`: add `onConvertToGenerator: () => void` and `convertDisabled: boolean` props; insert "Convert to Generator" button between "Merge All Numbers" and "Clear Numbers Grid" in the toolbar; apply `disabled` and `aria-disabled` from `convertDisabled` (depends on T009)
+- [X] T012 Update `src/components/GameBoard.tsx`: add `handleConvertToGenerator` dispatching `CONVERT_TO_GENERATOR`; compute `convertDisabled = current.selectedNumbersIdx === null`; pass `onConvertToGenerator` and `convertDisabled` to `NumbersSection` (depends on T006, T011)
 
 **Checkpoint**: `npm test` — T010 integration test passes; all prior tests still pass.
 
@@ -62,10 +62,10 @@
 
 **Independent Test**: Have a number matching a target → target shows Available style → click it → target shows Accomplished style, number remains in grid, score unchanged. Undo → target reverts. All Accomplished → win modal appears.
 
-- [ ] T013 Write failing unit tests for `TargetList` three-state rendering in `tests/unit/components/TargetList.test.tsx`: pending target renders without interactive affordance; available target renders with an inviting style and is clickable; accomplished target renders as done and click is a no-op; only available targets dispatch `CLAIM_TARGET`
-- [ ] T014 Write failing integration test for US4 in `tests/integration/story5-v030-enhancements.test.tsx`: add number matching target → target becomes available → click target → accomplished, score unchanged, number remains → undo → target reverts → make all targets accomplished → game ends
-- [ ] T015 Update `src/components/TargetList.tsx`: derive `status` per target (`accomplished` → `'accomplished'`; `numbersGrid.includes(target.value)` → `'available'`; else `'pending'`); apply per-status CSS class; wrap click handler so only `'available'` targets dispatch `CLAIM_TARGET`; non-available targets render as non-interactive (depends on T013, T007)
-- [ ] T016 [P] Add CSS rules for three target states in `src/styles/game.css` or `src/index.css`: `.target-pending` (default muted), `.target-available` (highlighted/inviting, cursor pointer), `.target-accomplished` (strikethrough/muted, cursor default) (depends on T015)
+- [X] T013 Write failing unit tests for `TargetList` three-state rendering in `tests/unit/components/TargetList.test.tsx`: pending target renders without interactive affordance; available target renders with an inviting style and is clickable; accomplished target renders as done and click is a no-op; only available targets dispatch `CLAIM_TARGET`
+- [X] T014 Write failing integration test for US4 in `tests/integration/story5-v030-enhancements.test.tsx`: add number matching target → target becomes available → click target → accomplished, score unchanged, number remains → undo → target reverts → make all targets accomplished → game ends
+- [X] T015 Update `src/components/TargetList.tsx`: derive `status` per target (`accomplished` → `'accomplished'`; `numbersGrid.includes(target.value)` → `'available'`; else `'pending'`); apply per-status CSS class; wrap click handler so only `'available'` targets dispatch `CLAIM_TARGET`; non-available targets render as non-interactive (depends on T013, T007)
+- [X] T016 [P] Add CSS rules for three target states in `src/styles/game.css` or `src/index.css`: `.target-pending` (default muted), `.target-available` (highlighted/inviting, cursor pointer), `.target-accomplished` (strikethrough/muted, cursor default) (depends on T015)
 
 **Checkpoint**: `npm test` — T013 and T014 tests pass; game ends when all targets accomplished; all prior tests still pass.
 
@@ -77,9 +77,9 @@
 
 **Independent Test**: Select Generator A → click Generator B → B is selected, A is deselected, score unchanged. No merge occurs.
 
-- [ ] T017 Write failing unit tests in `tests/unit/components/GameBoard.test.tsx` for `handleGeneratorsCellClick`: when a generator is selected and a different non-null generator is clicked, `SELECT_CELL` is dispatched (not `MERGE_CELLS`) and action score does not change
-- [ ] T018 Write failing integration test for US2 in `tests/integration/story5-v030-enhancements.test.tsx`: populate two generators, select first, click second, assert second is selected and score is unchanged
-- [ ] T019 Update `src/components/GameBoard.tsx` `handleGeneratorsCellClick`: in the branch where `selIdx !== null` and `cell !== null` and `selIdx !== idx`, replace `dispatch({ type: 'MERGE_CELLS', ... })` with `dispatch({ type: 'SELECT_CELL', grid: 'generators', cellIdx: idx })` (depends on T017)
+- [X] T017 Write failing unit tests in `tests/unit/components/GameBoard.test.tsx` for `handleGeneratorsCellClick`: when a generator is selected and a different non-null generator is clicked, `SELECT_CELL` is dispatched (not `MERGE_CELLS`) and action score does not change
+- [X] T018 Write failing integration test for US2 in `tests/integration/story5-v030-enhancements.test.tsx`: populate two generators, select first, click second, assert second is selected and score is unchanged
+- [X] T019 Update `src/components/GameBoard.tsx` `handleGeneratorsCellClick`: in the branch where `selIdx !== null` and `cell !== null` and `selIdx !== idx`, replace `dispatch({ type: 'MERGE_CELLS', ... })` with `dispatch({ type: 'SELECT_CELL', grid: 'generators', cellIdx: idx })` (depends on T017)
 
 **Checkpoint**: `npm test` — T017 and T018 tests pass; generator-to-generator merge no longer occurs; all prior tests still pass.
 
@@ -91,10 +91,10 @@
 
 **Independent Test**: Populate generators → click Reset Generators Grid → confirm → single generator (value 1) present, score +1. Undo → prior generators restored, score −1. Cancel → no change.
 
-- [ ] T020 Write failing unit tests for `GeneratorsSection` in `tests/unit/components/GeneratorsSection.test.tsx`: "Generate Generator" button is NOT rendered; "Reset Generators Grid" button IS rendered (with correct label); `onGenerateGenerator`/`generateDisabled` props are absent from interface
-- [ ] T021 Write failing integration test for US3 in `tests/integration/story5-v030-enhancements.test.tsx`: populate generators, click Reset Generators Grid, confirm, assert single generator value 1 and score +1; test cancel path leaves grid unchanged; test undo reverts reset
-- [ ] T022 [P] Update `src/components/GeneratorsSection.tsx`: remove `onGenerateGenerator` and `generateDisabled` props entirely; remove "Generate Generator" button; button label "Clear Generators Grid" → "Reset Generators Grid" (depends on T020)
-- [ ] T023 Update `src/components/GameBoard.tsx`: replace `handleClearGenerators` with `handleResetGenerators` dispatching `RESET_GENERATORS_GRID`; update `GeneratorsSection` props — remove `onGenerateGenerator` and `generateDisabled`, change `onClearGenerators` → `onResetGenerators`; remove `canGenerateGenerator()` function (depends on T006, T022)
+- [X] T020 Write failing unit tests for `GeneratorsSection` in `tests/unit/components/GeneratorsSection.test.tsx`: "Generate Generator" button is NOT rendered; "Reset Generators Grid" button IS rendered (with correct label); `onGenerateGenerator`/`generateDisabled` props are absent from interface
+- [X] T021 Write failing integration test for US3 in `tests/integration/story5-v030-enhancements.test.tsx`: populate generators, click Reset Generators Grid, confirm, assert single generator value 1 and score +1; test cancel path leaves grid unchanged; test undo reverts reset
+- [X] T022 [P] Update `src/components/GeneratorsSection.tsx`: remove `onGenerateGenerator` and `generateDisabled` props entirely; remove "Generate Generator" button; button label "Clear Generators Grid" → "Reset Generators Grid" (depends on T020)
+- [X] T023 Update `src/components/GameBoard.tsx`: replace `handleClearGenerators` with `handleResetGenerators` dispatching `RESET_GENERATORS_GRID`; update `GeneratorsSection` props — remove `onGenerateGenerator` and `generateDisabled`, change `onClearGenerators` → `onResetGenerators`; remove `canGenerateGenerator()` function (depends on T006, T022)
 
 **Checkpoint**: `npm test` — T020 and T021 tests pass; no Generate Generator button in UI; Reset Generators Grid works with confirmation and undo; all prior tests still pass.
 
@@ -106,9 +106,9 @@
 
 **Independent Test**: Load setup screen → 8 inputs with tutorial values (1, 2, 5, 12, 25, 67, 69, −420) → click Randomize → 8 new values in range −1023..1024 replace the list → click Start → game uses the randomized targets.
 
-- [ ] T024 Write failing unit tests for `SetupScreen` in `tests/unit/components/SetupScreen.test.tsx`: renders exactly 8 input fields; default values match tutorial list; "Randomize" button is present; clicking Randomize replaces all 8 values with numbers in −1023..1024
-- [ ] T025 Write failing integration test for US5 in `tests/integration/app-setup-to-game.test.tsx`: fresh render shows 8 tutorial targets; Randomize produces 8 different values; Start passes targets to game
-- [ ] T026 Update `src/components/SetupScreen.tsx`: change array size from 10 to 8; set initial state from `DEFAULT_TARGETS.map(String)` (imported from `gameState.ts`); add "Randomize" button that calls `generateRandomTargets()` and replaces `values` state; update `touched` array size to 8 (depends on T024, T005)
+- [X] T024 Write failing unit tests for `SetupScreen` in `tests/unit/components/SetupScreen.test.tsx`: renders exactly 8 input fields; default values match tutorial list; "Randomize" button is present; clicking Randomize replaces all 8 values with numbers in −1023..1024
+- [X] T025 Write failing integration test for US5 in `tests/integration/app-setup-to-game.test.tsx`: fresh render shows 8 tutorial targets; Randomize produces 8 different values; Start passes targets to game
+- [X] T026 Update `src/components/SetupScreen.tsx`: change array size from 10 to 8; set initial state from `DEFAULT_TARGETS.map(String)` (imported from `gameState.ts`); add "Randomize" button that calls `generateRandomTargets()` and replaces `values` state; update `touched` array size to 8 (depends on T024, T005)
 
 **Checkpoint**: `npm test` — T024 and T025 tests pass; setup screen shows 8 tutorial targets by default; all prior tests still pass.
 
@@ -118,9 +118,9 @@
 
 **Purpose**: Ensure full suite health, coverage, and manual verification.
 
-- [ ] T027 [P] Run `npm test` — fix any remaining test failures across all files; target: all tests green
-- [ ] T028 [P] Run `npm run test:coverage` — verify overall coverage ≥ 80%; add missing unit tests in `tests/unit/` if any module drops below threshold
-- [ ] T029 [P] Run `npm run typecheck` and `npm run lint` — resolve any type errors or lint warnings
+- [X] T027 [P] Run `npm test` — fix any remaining test failures across all files; target: all tests green
+- [X] T028 [P] Run `npm run test:coverage` — verify overall coverage ≥ 80%; add missing unit tests in `tests/unit/` if any module drops below threshold
+- [X] T029 [P] Run `npm run typecheck` and `npm run lint` — resolve any type errors or lint warnings
 - [ ] T030 Manual verification per `specs/005-v030-game-enhancements/quickstart.md` — walk through all rows of the "Key Behaviours to Verify Manually" table with `npm run dev`
 
 ---

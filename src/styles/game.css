@@ -167,6 +167,32 @@ h2 {
   outline-offset: 2px;
 }
 
+/* Target three-state styles */
+.target-list li button.target-pending {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.target-list li button.target-pending:hover {
+  background: var(--color-cell-bg);
+}
+
+.target-list li button.target-available {
+  box-shadow: 0 0 6px var(--color-target);
+  cursor: pointer;
+}
+
+.target-list li button.target-accomplished {
+  background: #10b981;
+  color: #052e16;
+  border-color: #10b981;
+  cursor: default;
+}
+
+.target-list li button.target-accomplished:hover {
+  background: #10b981;
+}
+
 /* Action buttons */
 .action-buttons {
   display: flex;

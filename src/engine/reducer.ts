@@ -9,6 +9,13 @@ function scored(store: GameStore, next: GameState): GameStore {
   }
 }
 
+function historical(store: GameStore, next: GameState): GameStore {
+  return {
+    current: next,
+    history: [...store.history, store.current],
+  }
+}
+
 export function gameReducer(store: GameStore, action: GameAction): GameStore {
   const { current, history } = store
 
@@ -43,12 +50,23 @@ export function gameReducer(store: GameStore, action: GameAction): GameStore {
       return { ...store, current: { ...current, generatorsGrid: grid, selectedGeneratorsIdx: null } }
     }
 
-    case 'GENERATE_GENERATOR': {
-      const idx = current.generatorsGrid.indexOf(null)
-      if (idx === -1) return store
-      const gen = [...current.generatorsGrid]
-      gen[idx] = 1
-      return scored(store, { ...current, generatorsGrid: gen })
+    case 'CONVERT_TO_GENERATOR': {
+      if (current.selectedNumbersIdx === null) return store
+      const selIdx = current.selectedNumbersIdx
+      const value = current.numbersGrid[selIdx]
+      if (value === null) return store
+      const emptyGenIdx = current.generatorsGrid.indexOf(null)
+      if (emptyGenIdx === -1) return store
+      const nums = [...current.numbersGrid]
+      nums[selIdx] = null
+      const gens = [...current.generatorsGrid]
+      gens[emptyGenIdx] = value
+      return scored(store, {
+        ...current,
+        numbersGrid: nums,
+        generatorsGrid: gens,
+        selectedNumbersIdx: null,
+      })
     }
 
     case 'GENERATE_NUMBER': {
@@ -75,7 +93,6 @@ export function gameReducer(store: GameStore, action: GameAction): GameStore {
           selectedGeneratorsIdx: null,
         })
       }
-      // generators merging into generators (rare but handled)
       sourceGrid[action.sourceIdx] = null
       sourceGrid[action.targetIdx] = result
       return scored(store, {
@@ -87,12 +104,14 @@ export function gameReducer(store: GameStore, action: GameAction): GameStore {
     }
 
     case 'CLAIM_TARGET': {
-      const cellIdx = current.numbersGrid.findIndex(v => v === action.targetValue)
-      if (cellIdx === -1) return store
-      const nums = [...current.numbersGrid]
-      nums[cellIdx] = null
-      const targets = current.targets.filter(t => t !== action.targetValue)
-      return scored(store, { ...current, numbersGrid: nums, targets })
+      const idx = current.targets.findIndex(t => t.value === action.targetValue && !t.accomplished)
+      if (idx === -1) return store
+      const available = current.numbersGrid.some(v => v === action.targetValue)
+      if (!available) return store
+      const targets = current.targets.map((t, i) =>
+        i === idx ? { ...t, accomplished: true } : t
+      )
+      return historical(store, { ...current, targets })
     }
 
     case 'MERGE_ALL_NUMBERS': {
@@ -113,10 +132,10 @@ export function gameReducer(store: GameStore, action: GameAction): GameStore {
         selectedNumbersIdx: null,
       })
 
-    case 'CLEAR_GENERATORS_GRID':
+    case 'RESET_GENERATORS_GRID':
       return scored(store, {
         ...current,
-        generatorsGrid: Array(4).fill(null),
+        generatorsGrid: [1, null, null, null],
         selectedGeneratorsIdx: null,
       })
 

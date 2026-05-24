@@ -9,7 +9,16 @@ function makeInitialState(overrides: Partial<GameState> = {}): GameState {
   return {
     numbersGrid: Array(9).fill(null),
     generatorsGrid: [1, null, null, null],
-    targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    targets: [
+      { value: 1, accomplished: false },
+      { value: 2, accomplished: false },
+      { value: 5, accomplished: false },
+      { value: 12, accomplished: false },
+      { value: 25, accomplished: false },
+      { value: 67, accomplished: false },
+      { value: 69, accomplished: false },
+      { value: -420, accomplished: false },
+    ],
     activeOperator: '+',
     actionScore: 0,
     selectedNumbersIdx: null,
@@ -23,7 +32,7 @@ describe('US2: Target Completion and Win', () => {
     vi.restoreAllMocks()
   })
 
-  it('clicking a target with a matching numbers grid cell removes both and increments score', async () => {
+  it('clicking an available target marks it accomplished, number stays in grid, score unchanged', async () => {
     vi.spyOn(gameStateModule, 'generateInitialState').mockReturnValue(
       makeInitialState({ numbersGrid: [1, null, null, null, null, null, null, null, null] })
     )
@@ -31,15 +40,17 @@ describe('US2: Target Completion and Win', () => {
     const targetList = screen.getByRole('list', { name: /targets/i })
     await userEvent.click(within(targetList).getByRole('button', { name: 'Claim target 1' }))
     const numGrid = screen.getByRole('grid', { name: /numbers grid/i })
-    expect(within(numGrid).queryByText('1')).toBeNull()
-    expect(screen.getByText(/action score:\s*1/i)).toBeInTheDocument()
+    expect(within(numGrid).getByText('1')).toBeInTheDocument()
+    expect(screen.getByText(/action score:\s*0/i)).toBeInTheDocument()
   })
 
-  it('clicking the last target shows win modal', async () => {
+  it('clicking a target when all targets are accomplished shows win modal', async () => {
     vi.spyOn(gameStateModule, 'generateInitialState').mockReturnValue(
       makeInitialState({
         numbersGrid: [1, null, null, null, null, null, null, null, null],
-        targets: [1],
+        targets: [
+          { value: 1, accomplished: false },
+        ],
       })
     )
     render(<GameBoard />)
@@ -48,7 +59,7 @@ describe('US2: Target Completion and Win', () => {
     expect(screen.getByRole('dialog', { name: /you won/i })).toBeInTheDocument()
   })
 
-  it('clicking a target with no matching cell changes nothing', async () => {
+  it('clicking a target with no matching cell in numbersGrid changes nothing', async () => {
     vi.spyOn(gameStateModule, 'generateInitialState').mockReturnValue(
       makeInitialState({ numbersGrid: Array(9).fill(null) })
     )
@@ -58,22 +69,14 @@ describe('US2: Target Completion and Win', () => {
     expect(screen.getByText(/action score:\s*0/i)).toBeInTheDocument()
   })
 
-  it('remaining targets stay sorted by |value| after a claim', async () => {
+  it('undo after claiming a target reverts accomplished status', async () => {
     vi.spyOn(gameStateModule, 'generateInitialState').mockReturnValue(
       makeInitialState({ numbersGrid: [1, null, null, null, null, null, null, null, null] })
     )
     render(<GameBoard />)
     const targetList = screen.getByRole('list', { name: /targets/i })
-    const buttons = within(targetList).getAllByRole('button')
-    const values = buttons.map(b => parseInt(b.textContent ?? '0', 10))
-    for (let i = 1; i < values.length; i++) {
-      expect(Math.abs(values[i])).toBeGreaterThanOrEqual(Math.abs(values[i - 1]))
-    }
     await userEvent.click(within(targetList).getByRole('button', { name: 'Claim target 1' }))
-    const remaining = within(targetList).getAllByRole('button')
-    const remVals = remaining.map(b => parseInt(b.textContent ?? '0', 10))
-    for (let i = 1; i < remVals.length; i++) {
-      expect(Math.abs(remVals[i])).toBeGreaterThanOrEqual(Math.abs(remVals[i - 1]))
-    }
+    await userEvent.click(screen.getByRole('button', { name: /undo/i }))
+    expect(screen.getByText(/action score:\s*0/i)).toBeInTheDocument()
   })
 })

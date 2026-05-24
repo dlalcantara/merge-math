@@ -9,7 +9,16 @@ function makeInitialState(overrides: Partial<GameState> = {}): GameState {
   return {
     numbersGrid: Array(9).fill(null),
     generatorsGrid: [1, null, null, null],
-    targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    targets: [
+      { value: 1, accomplished: false },
+      { value: 2, accomplished: false },
+      { value: 5, accomplished: false },
+      { value: 12, accomplished: false },
+      { value: 25, accomplished: false },
+      { value: 67, accomplished: false },
+      { value: 69, accomplished: false },
+      { value: -420, accomplished: false },
+    ],
     activeOperator: '+',
     actionScore: 0,
     selectedNumbersIdx: null,
@@ -93,32 +102,28 @@ describe('US4: Bulk Operations', () => {
     expect(screen.getByText(/action score:\s*0/i)).toBeInTheDocument()
   })
 
-  it('Clear Generators Grid with confirm empties generators and increments score', async () => {
+  it('Reset Generators Grid with confirm resets to [1,null,null,null] and increments score', async () => {
     vi.spyOn(gameStateModule, 'generateInitialState').mockReturnValue(
-      makeInitialState({ generatorsGrid: [1, 2, null, null] })
+      makeInitialState({ generatorsGrid: [3, 5, 7, null] })
     )
     vi.spyOn(window, 'confirm').mockReturnValue(true)
     render(<GameBoard />)
-    await userEvent.click(screen.getByRole('button', { name: /clear generators grid/i }))
+    await userEvent.click(screen.getByRole('button', { name: /reset generators grid/i }))
     const genGrid = screen.getByRole('grid', { name: /generators grid/i })
-    const filled = within(genGrid).queryAllByText(/\d/)
-    expect(filled).toHaveLength(0)
+    expect(within(genGrid).getByText('1')).toBeInTheDocument()
+    expect(within(genGrid).queryByText('3')).toBeNull()
     expect(screen.getByText(/action score:\s*1/i)).toBeInTheDocument()
   })
 
-  it('Generate Generator adds a 1 to generators grid when slot available', async () => {
-    render(<GameBoard />)
-    await userEvent.click(screen.getByRole('button', { name: /generate generator/i }))
-    const genGrid = screen.getByRole('grid', { name: /generators grid/i })
-    const ones = within(genGrid).getAllByText('1')
-    expect(ones.length).toBeGreaterThanOrEqual(2)
-  })
-
-  it('Generate Generator is disabled when generators grid is full', async () => {
+  it('Reset Generators Grid with cancel makes no change', async () => {
     vi.spyOn(gameStateModule, 'generateInitialState').mockReturnValue(
-      makeInitialState({ generatorsGrid: [1, 2, 3, 4] })
+      makeInitialState({ generatorsGrid: [3, 5, null, null] })
     )
+    vi.spyOn(window, 'confirm').mockReturnValue(false)
     render(<GameBoard />)
-    expect(screen.getByRole('button', { name: /generate generator/i })).toBeDisabled()
+    await userEvent.click(screen.getByRole('button', { name: /reset generators grid/i }))
+    const genGrid = screen.getByRole('grid', { name: /generators grid/i })
+    expect(within(genGrid).getByText('3')).toBeInTheDocument()
+    expect(screen.getByText(/action score:\s*0/i)).toBeInTheDocument()
   })
 })

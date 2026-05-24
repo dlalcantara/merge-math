@@ -6,6 +6,8 @@ interface NumbersSectionProps {
   onCellClick: (idx: number) => void
   onMergeAll: () => void
   onClearNumbers: () => void
+  onConvertToGenerator: () => void
+  convertDisabled: boolean
   mergeAllDisabled: boolean
 }
 
@@ -15,6 +17,8 @@ export function NumbersSection({
   onCellClick,
   onMergeAll,
   onClearNumbers,
+  onConvertToGenerator,
+  convertDisabled,
   mergeAllDisabled,
 }: NumbersSectionProps) {
   return (
@@ -34,6 +38,13 @@ export function NumbersSection({
           aria-disabled={mergeAllDisabled}
         >
           Merge All Numbers
+        </button>
+        <button
+          onClick={onConvertToGenerator}
+          disabled={convertDisabled}
+          aria-disabled={convertDisabled}
+        >
+          Convert to Generator
         </button>
         <button onClick={onClearNumbers}>Clear Numbers Grid</button>
       </div>

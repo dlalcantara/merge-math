@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { GameBoard } from './components/GameBoard'
 import { SetupScreen } from './components/SetupScreen'
+import type { Target } from './engine/types'
 
 export default function App() {
   const [phase, setPhase] = useState<'setup' | 'playing'>('setup')
-  const [confirmedTargets, setConfirmedTargets] = useState<number[] | null>(null)
+  const [confirmedTargets, setConfirmedTargets] = useState<Target[] | null>(null)
 
   function handleStart(targets: number[]) {
-    setConfirmedTargets(targets)
+    setConfirmedTargets(targets.map(value => ({ value, accomplished: false })))
     setPhase('playing')
   }
 

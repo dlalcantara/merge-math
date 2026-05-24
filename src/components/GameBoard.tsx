@@ -5,16 +5,16 @@ import { WinModal } from './WinModal'
 import { ScoreRow } from './ScoreRow'
 import { NumbersSection } from './NumbersSection'
 import { GeneratorsSection } from './GeneratorsSection'
-import type { Operator } from '../engine/types'
+import type { Operator, Target } from '../engine/types'
 
 interface GameBoardProps {
-  initialTargets?: number[]
+  initialTargets?: Target[]
 }
 
 export function GameBoard({ initialTargets }: GameBoardProps) {
   const { store, dispatch } = useGame(initialTargets)
   const { current } = store
-  const isWon = current.targets.length === 0
+  const isWon = current.targets.every(t => t.accomplished)
 
   function canMergeAll(): boolean {
     return (
@@ -23,17 +23,12 @@ export function GameBoard({ initialTargets }: GameBoardProps) {
     )
   }
 
-  function canGenerateGenerator(): boolean {
-    return current.generatorsGrid.some(v => v === null)
-  }
-
   function handleNumbersCellClick(idx: number) {
     const cell = current.numbersGrid[idx]
     const selIdx = current.selectedNumbersIdx
 
     if (selIdx === null) {
       if (current.selectedGeneratorsIdx !== null) {
-        // Selection lives in the other grid — cross-grid click
         if (cell !== null) {
           dispatch({ type: 'SELECT_CELL', grid: 'numbers', cellIdx: idx })
         } else {
@@ -66,7 +61,6 @@ export function GameBoard({ initialTargets }: GameBoardProps) {
 
     if (selIdx === null) {
       if (current.selectedNumbersIdx !== null) {
-        // Selection lives in the other grid — cross-grid click
         if (cell !== null) {
           dispatch({ type: 'SELECT_CELL', grid: 'generators', cellIdx: idx })
         } else {
@@ -95,7 +89,7 @@ export function GameBoard({ initialTargets }: GameBoardProps) {
       return
     }
 
-    dispatch({ type: 'MERGE_CELLS', sourceGrid: 'generators', sourceIdx: selIdx, targetIdx: idx })
+    dispatch({ type: 'SELECT_CELL', grid: 'generators', cellIdx: idx })
   }
 
   function handleBoardClick(e: React.MouseEvent<HTMLDivElement>) {
@@ -110,10 +104,14 @@ export function GameBoard({ initialTargets }: GameBoardProps) {
     }
   }
 
-  function handleClearGenerators() {
-    if (window.confirm('Clear the Generators Grid?')) {
-      dispatch({ type: 'CLEAR_GENERATORS_GRID' })
+  function handleResetGenerators() {
+    if (window.confirm('Reset the Generators Grid?')) {
+      dispatch({ type: 'RESET_GENERATORS_GRID' })
     }
+  }
+
+  function handleConvertToGenerator() {
+    dispatch({ type: 'CONVERT_TO_GENERATOR' })
   }
 
   return (
@@ -124,7 +122,11 @@ export function GameBoard({ initialTargets }: GameBoardProps) {
         undoDisabled={store.history.length === 0}
       />
 
-      <TargetList targets={current.targets} dispatch={dispatch} />
+      <TargetList
+        targets={current.targets}
+        numbersGrid={current.numbersGrid as (number | null)[]}
+        dispatch={dispatch}
+      />
 
       <NumbersSection
         cells={current.numbersGrid}
@@ -132,6 +134,8 @@ export function GameBoard({ initialTargets }: GameBoardProps) {
         onCellClick={handleNumbersCellClick}
         onMergeAll={() => dispatch({ type: 'MERGE_ALL_NUMBERS' })}
         onClearNumbers={handleClearNumbers}
+        onConvertToGenerator={handleConvertToGenerator}
+        convertDisabled={current.selectedNumbersIdx === null}
         mergeAllDisabled={!canMergeAll()}
       />
 
@@ -144,9 +148,7 @@ export function GameBoard({ initialTargets }: GameBoardProps) {
         cells={current.generatorsGrid}
         selectedIdx={current.selectedGeneratorsIdx}
         onCellClick={handleGeneratorsCellClick}
-        onGenerateGenerator={() => dispatch({ type: 'GENERATE_GENERATOR' })}
-        onClearGenerators={handleClearGenerators}
-        generateDisabled={!canGenerateGenerator()}
+        onResetGenerators={handleResetGenerators}
       />
 
       {isWon && <WinModal score={current.actionScore} dispatch={dispatch} />}
