@@ -56,9 +56,6 @@ describe('GameBoard layout order', () => {
     const operatorSelector = screen.getByRole('group')
     const generatorsSection = screen.getByTestId('generators-section')
 
-    const all = [scoreRow, targetList, numbersSection, operatorSelector, generatorsSection]
-    const positions = all.map(el => el.compareDocumentPosition(all[0]))
-
     // Each element should appear after the previous one (compareDocumentPosition returns FOLLOWING=4 when arg is before the element)
     expect(scoreRow.compareDocumentPosition(targetList) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     expect(targetList.compareDocumentPosition(numbersSection) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()

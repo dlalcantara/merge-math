@@ -26,7 +26,7 @@ export function ActionButtons({ store, state, dispatch }: ActionButtonsProps) {
 
   function handleClearGenerators() {
     if (window.confirm('Clear the Generators Grid?')) {
-      dispatch({ type: 'CLEAR_GENERATORS_GRID' })
+      dispatch({ type: 'RESET_GENERATORS_GRID' })
     }
   }
 
@@ -49,7 +49,7 @@ export function ActionButtons({ store, state, dispatch }: ActionButtonsProps) {
       </button>
 
       <button
-        onClick={() => dispatch({ type: 'GENERATE_GENERATOR' })}
+        onClick={() => dispatch({ type: 'CONVERT_TO_GENERATOR' })}
         disabled={!canGenerateGenerator(state)}
         aria-disabled={!canGenerateGenerator(state)}
       >
