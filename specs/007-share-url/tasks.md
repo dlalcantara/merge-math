@@ -19,7 +19,7 @@
 
 **Purpose**: Create the new utility module skeleton. Downstream tasks depend on this file existing.
 
-- [ ] T001 Create `src/utils/shareUrl.ts` with empty exported function stubs: `encodeTargets`, `parseTargets`, `buildShareUrl`, `copyToClipboard` (stub bodies may throw `Error('not implemented')`)
+- [x] T001 Create `src/utils/shareUrl.ts` with empty exported function stubs: `encodeTargets`, `parseTargets`, `buildShareUrl`, `copyToClipboard` (stub bodies may throw `Error('not implemented')`)
 
 ---
 
@@ -29,17 +29,17 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T002 Write failing unit tests for all four `shareUrl` functions in `tests/unit/utils/shareUrl.test.ts`:
+- [x] T002 Write failing unit tests for all four `shareUrl` functions in `tests/unit/utils/shareUrl.test.ts`:
   - `encodeTargets([1,2,5,12,25,67,69,-420])` → `"#targets=1,2,5,12,25,67,69,-420"`
   - `parseTargets("#targets=1,2,5,12,25,67,69,-420")` → `[1,2,5,12,25,67,69,-420]`
   - `parseTargets("")` / `parseTargets("#targets=abc")` / `parseTargets("#targets=1,2")` → `null`
   - `buildShareUrl(targets)` → full URL ending with `#targets=…`
   - `copyToClipboard(text)` → `'success'` when `navigator.clipboard.writeText` resolves; `'fallback'` when clipboard is unavailable
   - Mock `navigator.clipboard.writeText` with `vi.fn()` and `window.location` as needed
-- [ ] T003 Implement `encodeTargets(targets: number[]): string` in `src/utils/shareUrl.ts` — joins values with commas, prefixes with `"#targets="` — make T002 tests for this function pass
-- [ ] T004 Implement `parseTargets(hash: string): number[] | null` in `src/utils/shareUrl.ts` — validates prefix, splits on comma, checks count is exactly 8, checks each part is a finite integer — make T002 tests for this function pass
-- [ ] T005 Implement `buildShareUrl(targets: number[]): string` in `src/utils/shareUrl.ts` — constructs `window.location.origin + window.location.pathname + encodeTargets(targets)` — make T002 tests for this function pass
-- [ ] T006 Implement `copyToClipboard(text: string): Promise<'success' | 'fallback'>` in `src/utils/shareUrl.ts` — calls `navigator.clipboard.writeText(text)`, catches all errors/unavailability and returns `'fallback'` — make T002 tests for this function pass
+- [x] T003 Implement `encodeTargets(targets: number[]): string` in `src/utils/shareUrl.ts` — joins values with commas, prefixes with `"#targets="` — make T002 tests for this function pass
+- [x] T004 Implement `parseTargets(hash: string): number[] | null` in `src/utils/shareUrl.ts` — validates prefix, splits on comma, checks count is exactly 8, checks each part is a finite integer — make T002 tests for this function pass
+- [x] T005 Implement `buildShareUrl(targets: number[]): string` in `src/utils/shareUrl.ts` — constructs `window.location.origin + window.location.pathname + encodeTargets(targets)` — make T002 tests for this function pass
+- [x] T006 Implement `copyToClipboard(text: string): Promise<'success' | 'fallback'>` in `src/utils/shareUrl.ts` — calls `navigator.clipboard.writeText(text)`, catches all errors/unavailability and returns `'fallback'` — make T002 tests for this function pass
 
 **Checkpoint**: Run `npm test tests/unit/utils/shareUrl.test.ts` — all tests must pass before proceeding.
 
@@ -55,21 +55,21 @@
 
 > **Write these tests FIRST and confirm they FAIL before implementing T009–T010.**
 
-- [ ] T007 [P] [US1] Write failing share-button unit tests in `tests/unit/components/ScoreRow.test.tsx`:
+- [x] T007 [P] [US1] Write failing share-button unit tests in `tests/unit/components/ScoreRow.test.tsx`:
   - Share button renders with accessible label (e.g., `aria-label="Share"`)
   - Clicking share button calls the `onShare` prop
   - When `copyState` prop is `'copied'`, the button area shows "Copied!" text
   - When `copyState` prop is `'fallback'`, a textarea containing the fallback URL is rendered
   - Share button and Undo button are in the same `data-testid="score-row"` container
-- [ ] T008 [P] [US1] Write failing US1 integration test in `tests/integration/story6-share-url.test.tsx` (describe block "US1 – Share button"):
+- [x] T008 [P] [US1] Write failing US1 integration test in `tests/integration/story6-share-url.test.tsx` (describe block "US1 – Share button"):
   - Start a game with known targets; click the share icon; verify `navigator.clipboard.writeText` was called with a URL containing those target values
   - Mock `navigator.clipboard.writeText` with `vi.fn()` that resolves
   - Verify "Copied!" confirmation text appears briefly
 
 ### Implementation for User Story 1
 
-- [ ] T009 [US1] Add `onShare: () => Promise<void>` prop, share icon `<button>` (with `aria-label="Share"`), `copyState: 'idle' | 'copied' | 'fallback'` prop (or local state), conditional "Copied!" text and fallback `<textarea>` rendering to `src/components/ScoreRow.tsx` — make T007 tests pass
-- [ ] T010 [US1] Add `handleShare` handler to `src/components/GameBoard.tsx` that builds the share URL from `current.targets`, calls `copyToClipboard`, manages a `copyState` local state with 2 s auto-reset, passes `onShare` and `copyState` to `<ScoreRow>` — make T008 integration test pass
+- [x] T009 [US1] Add `onShare: () => Promise<void>` prop, share icon `<button>` (with `aria-label="Share"`), `copyState: 'idle' | 'copied' | 'fallback'` prop (or local state), conditional "Copied!" text and fallback `<textarea>` rendering to `src/components/ScoreRow.tsx` — make T007 tests pass
+- [x] T010 [US1] Add `handleShare` handler to `src/components/GameBoard.tsx` that builds the share URL from `current.targets`, calls `copyToClipboard`, manages a `copyState` local state with 2 s auto-reset, passes `onShare` and `copyState` to `<ScoreRow>` — make T008 integration test pass
 
 **Checkpoint**: Run `npm test -- --reporter=verbose`; US1 unit and integration tests must pass. Manually verify: start game → click share → clipboard contains correct URL → "Copied!" appears for ≈2 s.
 
@@ -85,7 +85,7 @@
 
 > **Write these tests FIRST and confirm they FAIL before implementing T012.**
 
-- [ ] T011 [US2] Write failing US2 integration tests in `tests/integration/story6-share-url.test.tsx` (describe block "US2 – URL load"):
+- [x] T011 [US2] Write failing US2 integration tests in `tests/integration/story6-share-url.test.tsx` (describe block "US2 – URL load"):
   - Set `window.location.hash = '#targets=1,2,5,12,25,67,69,-420'` before rendering `<App>`; assert setup screen is NOT shown and the numbers grid IS shown
   - Set an invalid hash (`#targets=abc`); assert setup screen IS shown
   - Set a hash with wrong count (`#targets=1,2,3`); assert setup screen IS shown
@@ -93,7 +93,7 @@
 
 ### Implementation for User Story 2
 
-- [ ] T012 [US2] Update `src/App.tsx` to call `parseTargets(window.location.hash)` inside `useState` initialisers: if result is non-null, initialise `phase` to `'playing'` and `confirmedTargets` to the parsed integers mapped to `Target[]`; otherwise keep existing `'setup'`/`null` defaults — make T011 tests pass
+- [x] T012 [US2] Update `src/App.tsx` to call `parseTargets(window.location.hash)` inside `useState` initialisers: if result is non-null, initialise `phase` to `'playing'` and `confirmedTargets` to the parsed integers mapped to `Target[]`; otherwise keep existing `'setup'`/`null` defaults — make T011 tests pass
 
 **Checkpoint**: Run `npm test -- --reporter=verbose`; US2 integration tests must pass. Manually open `http://localhost:5173/#targets=1,2,5,12,25,67,69,-420` and confirm game starts without setup screen.
 
@@ -103,9 +103,9 @@
 
 **Purpose**: Verify quality gates; no new functionality.
 
-- [ ] T013 [P] Run `npm run typecheck` — fix any TypeScript errors in `src/utils/shareUrl.ts`, `src/components/ScoreRow.tsx`, `src/components/GameBoard.tsx`, `src/App.tsx`
-- [ ] T014 [P] Run `npm test` — confirm all existing tests still pass alongside new tests (no regressions in `app-setup-to-game.test.tsx`, `ScoreRow.test.tsx`, etc.)
-- [ ] T015 Run `npm run test:coverage` — confirm overall coverage remains ≥ 80%; add targeted tests in `tests/unit/utils/shareUrl.test.ts` if any branch is uncovered
+- [x] T013 [P] Run `npm run typecheck` — fix any TypeScript errors in `src/utils/shareUrl.ts`, `src/components/ScoreRow.tsx`, `src/components/GameBoard.tsx`, `src/App.tsx`
+- [x] T014 [P] Run `npm test` — confirm all existing tests still pass alongside new tests (no regressions in `app-setup-to-game.test.tsx`, `ScoreRow.test.tsx`, etc.)
+- [x] T015 Run `npm run test:coverage` — confirm overall coverage remains ≥ 80%; add targeted tests in `tests/unit/utils/shareUrl.test.ts` if any branch is uncovered
 
 ---
 

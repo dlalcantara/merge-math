@@ -1,3 +1,4 @@
+import { useState, useRef, useCallback } from 'react'
 import { useGame } from '../hooks/useGame'
 import { OperatorSelector } from './OperatorSelector'
 import { TargetList } from './TargetList'
@@ -5,6 +6,7 @@ import { WinModal } from './WinModal'
 import { ScoreRow } from './ScoreRow'
 import { NumbersSection } from './NumbersSection'
 import { GeneratorsSection } from './GeneratorsSection'
+import { buildShareUrl, copyToClipboard } from '../utils/shareUrl'
 import type { Operator, Target } from '../engine/types'
 
 interface GameBoardProps {
@@ -15,6 +17,24 @@ export function GameBoard({ initialTargets }: GameBoardProps) {
   const { store, dispatch } = useGame(initialTargets)
   const { current } = store
   const isWon = current.targets.every(t => t.accomplished)
+
+  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'fallback'>('idle')
+  const [fallbackUrl, setFallbackUrl] = useState<string | null>(null)
+  const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const handleShare = useCallback(async () => {
+    const url = buildShareUrl(current.targets.map(t => t.value))
+    const result = await copyToClipboard(url)
+    if (result === 'success') {
+      setCopyState('copied')
+      setFallbackUrl(null)
+      if (resetTimer.current) clearTimeout(resetTimer.current)
+      resetTimer.current = setTimeout(() => setCopyState('idle'), 2000)
+    } else {
+      setCopyState('fallback')
+      setFallbackUrl(url)
+    }
+  }, [current.targets])
 
   function canMergeAll(): boolean {
     return (
@@ -120,6 +140,9 @@ export function GameBoard({ initialTargets }: GameBoardProps) {
         score={current.actionScore}
         onUndo={() => dispatch({ type: 'UNDO' })}
         undoDisabled={store.history.length === 0}
+        onShare={handleShare}
+        copyState={copyState}
+        fallbackUrl={fallbackUrl}
       />
 
       <TargetList targets={current.targets} />
