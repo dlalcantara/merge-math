@@ -2,12 +2,12 @@ interface ScoreRowProps {
   score: number
   onUndo: () => void
   undoDisabled: boolean
-  onShare: () => void
-  copyState: 'idle' | 'copied' | 'fallback'
-  fallbackUrl: string | null
+  onShare?: () => void
+  copyState?: 'idle' | 'copied' | 'fallback'
+  fallbackUrl?: string | null
 }
 
-export function ScoreRow({ score, onUndo, undoDisabled, onShare, copyState, fallbackUrl }: ScoreRowProps) {
+export function ScoreRow({ score, onUndo, undoDisabled, onShare, copyState = 'idle', fallbackUrl = null }: ScoreRowProps) {
   return (
     <div
       data-testid="score-row"
