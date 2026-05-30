@@ -1,10 +1,10 @@
 export const helpIntroTitle: string = 'How to Play'
 
-export const helpIntroBody: string = `Your goal is to make each target number on the list. Tap a number tile to pick it up, then tap a second tile to combine them using the operator you have selected (+, −, ×, or ÷).
+export const helpIntroBody: string = `Your goal is to make each number on the target list. Tap a number tile to select it, then tap a second tile to combine them using the selected operator (+, −, ×, or ÷).
 
-When the result of a merge matches an unclaimed target, that target is accomplished. Clear every target to win.
+When the result matches an unclaimed target, that target is accomplished. Clear every target to win.
 
-If you run out of useful tiles, tap a generator tile to drop a new number onto an empty slot. You can also select a number tile and tap Convert to Generator to turn it into a new generator. The Undo button reverses your last move. Take your time — there is no clock.`
+If you run out of useful numbers, tap a generator to drop a new number onto an empty slot. You can also select a number tile and tap Convert to Generator to create a new generator. The Undo button reverses your last move. Take your time — there is no clock.`
 
 export const helpDisclaimerTitle: string = 'AI & Attribution'
 
