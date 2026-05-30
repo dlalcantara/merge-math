@@ -99,7 +99,7 @@ to:
 **Decision**: 8 targets. Default list: `[1, 2, 5, 12, 25, 67, 69, -420]` (fixed tutorial values per spec). Random generation uses the existing algorithm adjusted to 8 values, range −1023 to 1024 inclusive (matches current `generateTargets()` range).
 
 The existing sort-by-absolute-value is dropped for the fixed list (the tutorial list is already in a meaningful play order). The sort is retained for `generateRandomTargets()` for readability.
-
+x`
 **Rationale**: Straightforward spec compliance. The existing range formula (`Math.floor(Math.random() * 2048) - 1023`) already covers −1023..1024; only the count changes from 10 to 8.
 
 ---

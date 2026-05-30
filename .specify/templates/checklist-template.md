@@ -32,6 +32,13 @@
 - [ ] CHK005 Item with specific criteria
 - [ ] CHK006 Final item in this category
 
+## Build Verification
+
+> **Always include this section.** These items catch CI failures that local test runners (Vitest, Jest, etc.) miss because they transpile TypeScript without type-checking.
+
+- [ ] CHK_BV1 Run `npm run typecheck` (or equivalent `tsc --noEmit`) and confirm zero type errors
+- [ ] CHK_BV2 Run `npm run build` locally and confirm it exits 0
+
 ## Notes
 
 - Check items off as completed: `[x]`
