@@ -107,7 +107,6 @@ export function gameReducer(store: GameStore, action: GameAction): GameStore {
 
     case 'MERGE_ALL_NUMBERS': {
       const op = current.activeOperator
-      if (op !== '+' && op !== '*') return store
       const values = current.numbersGrid.filter(v => v !== null) as number[]
       if (values.length < 2) return store
       const result = values.reduce((acc, v) => applyOperator(acc, v, op))

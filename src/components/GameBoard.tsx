@@ -37,10 +37,7 @@ export function GameBoard({ initialTargets }: GameBoardProps) {
   }, [current.targets])
 
   function canMergeAll(): boolean {
-    return (
-      (current.activeOperator === '+' || current.activeOperator === '*') &&
-      current.numbersGrid.filter(v => v !== null).length >= 2
-    )
+    return current.numbersGrid.filter(v => v !== null).length >= 2
   }
 
   function handleNumbersCellClick(idx: number) {

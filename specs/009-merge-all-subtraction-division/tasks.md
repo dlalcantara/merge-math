@@ -29,16 +29,16 @@ No new project structure, dependencies, or configuration required. All changes l
 
 **⚠️ CRITICAL**: Confirm each test FAILS before proceeding to Phase 3.
 
-- [ ] T001 [US1] Add unit test `MERGE_ALL_NUMBERS with - subtracts sequentially` to `tests/unit/engine/reducer.test.ts` — store with `activeOperator: '-'`, grid `[10, 3, 2, null×6]`, dispatch `MERGE_ALL_NUMBERS`, expect `numbersGrid[0]` to be `5` (10-3=7, 7-2=5) and all other cells null
-- [ ] T002 [P] [US2] Add unit test `MERGE_ALL_NUMBERS with / divides sequentially` to `tests/unit/engine/reducer.test.ts` — store with `activeOperator: '/'`, grid `[12, 3, 2, null×6]`, dispatch `MERGE_ALL_NUMBERS`, expect `numbersGrid[0]` to be `2` (12÷3=4, 4÷2=2)
-- [ ] T003 [P] [US1] Add unit test `MERGE_ALL_NUMBERS with / by zero yields 0` to `tests/unit/engine/reducer.test.ts` — grid `[10, 0, null×7]`, expect result `0`
-- [ ] T004 [P] [US1] Add unit test `MERGE_ALL_NUMBERS with - increments actionScore` to `tests/unit/engine/reducer.test.ts` — confirm `actionScore` increments to 1
-- [ ] T005 [P] [US1] Add unit test `MERGE_ALL_NUMBERS with - pushes to history (undo restores)` to `tests/unit/engine/reducer.test.ts` — dispatch then UNDO, confirm original grid restored
-- [ ] T006 [P] [US2] Add unit test `MERGE_ALL_NUMBERS with / pushes to history (undo restores)` to `tests/unit/engine/reducer.test.ts`
-- [ ] T007 [US1] Update integration test `'Merge All button is disabled for operator -'` in `tests/integration/story4-bulk-operations.test.tsx` — change assertion from `toBeDisabled()` to `not.toBeDisabled()` (the test description should also be updated to `'Merge All button is enabled for operator - with 2+ numbers'`)
-- [ ] T008 [P] [US2] Update integration test `'Merge All button is disabled for operator /'` in `tests/integration/story4-bulk-operations.test.tsx` — same inversion as T007
-- [ ] T009 [P] [US1] Add integration test `'Merge All with - subtracts values left-to-right'` to `tests/integration/story4-bulk-operations.test.tsx` — mock initial state with `[10, 3, null×7]` and `activeOperator: '-'`, click "Merge All Numbers", assert grid shows `7`
-- [ ] T010 [P] [US2] Add integration test `'Merge All with / divides values left-to-right'` to `tests/integration/story4-bulk-operations.test.tsx` — mock initial state with `[12, 3, null×7]` and `activeOperator: '/'`, click "Merge All Numbers", assert grid shows `4`
+- [x] T001 [US1] Add unit test `MERGE_ALL_NUMBERS with - subtracts sequentially` to `tests/unit/engine/reducer.test.ts` — store with `activeOperator: '-'`, grid `[10, 3, 2, null×6]`, dispatch `MERGE_ALL_NUMBERS`, expect `numbersGrid[0]` to be `5` (10-3=7, 7-2=5) and all other cells null
+- [x] T002 [P] [US2] Add unit test `MERGE_ALL_NUMBERS with / divides sequentially` to `tests/unit/engine/reducer.test.ts` — store with `activeOperator: '/'`, grid `[12, 3, 2, null×6]`, dispatch `MERGE_ALL_NUMBERS`, expect `numbersGrid[0]` to be `2` (12÷3=4, 4÷2=2)
+- [x] T003 [P] [US1] Add unit test `MERGE_ALL_NUMBERS with / by zero yields 0` to `tests/unit/engine/reducer.test.ts` — grid `[10, 0, null×7]`, expect result `0`
+- [x] T004 [P] [US1] Add unit test `MERGE_ALL_NUMBERS with - increments actionScore` to `tests/unit/engine/reducer.test.ts` — confirm `actionScore` increments to 1
+- [x] T005 [P] [US1] Add unit test `MERGE_ALL_NUMBERS with - pushes to history (undo restores)` to `tests/unit/engine/reducer.test.ts` — dispatch then UNDO, confirm original grid restored
+- [x] T006 [P] [US2] Add unit test `MERGE_ALL_NUMBERS with / pushes to history (undo restores)` to `tests/unit/engine/reducer.test.ts`
+- [x] T007 [US1] Update integration test `'Merge All button is disabled for operator -'` in `tests/integration/story4-bulk-operations.test.tsx` — change assertion from `toBeDisabled()` to `not.toBeDisabled()` (the test description should also be updated to `'Merge All button is enabled for operator - with 2+ numbers'`)
+- [x] T008 [P] [US2] Update integration test `'Merge All button is disabled for operator /'` in `tests/integration/story4-bulk-operations.test.tsx` — same inversion as T007
+- [x] T009 [P] [US1] Add integration test `'Merge All with - subtracts values left-to-right'` to `tests/integration/story4-bulk-operations.test.tsx` — mock initial state with `[10, 3, null×7]` and `activeOperator: '-'`, click "Merge All Numbers", assert grid shows `7`
+- [x] T010 [P] [US2] Add integration test `'Merge All with / divides values left-to-right'` to `tests/integration/story4-bulk-operations.test.tsx` — mock initial state with `[12, 3, null×7]` and `activeOperator: '/'`, click "Merge All Numbers", assert grid shows `4`
 
 **Checkpoint**: Run `npm test` — T001–T010 MUST all fail (or the two updated tests T007/T008 must now fail due to assertion flip). No production code should be touched until confirmed.
 
@@ -52,9 +52,9 @@ No new project structure, dependencies, or configuration required. All changes l
 
 ### Implementation for User Story 1
 
-- [ ] T011 [US1] Remove operator guard from `MERGE_ALL_NUMBERS` in `src/engine/reducer.ts` — delete the line `if (op !== '+' && op !== '*') return store` (line ~110)
-- [ ] T012 [P] [US1] Update `canMergeAll` in `src/components/ActionButtons.tsx` — replace `state.activeOperator === '+' || state.activeOperator === '*'` with `true` (or simply remove the operator check, keeping only the `>= 2` count check)
-- [ ] T013 [P] [US1] Update `canMergeAll` in `src/components/GameBoard.tsx` — same change as T012
+- [x] T011 [US1] Remove operator guard from `MERGE_ALL_NUMBERS` in `src/engine/reducer.ts` — delete the line `if (op !== '+' && op !== '*') return store` (line ~110)
+- [x] T012 [P] [US1] Update `canMergeAll` in `src/components/ActionButtons.tsx` — replace `state.activeOperator === '+' || state.activeOperator === '*'` with `true` (or simply remove the operator check, keeping only the `>= 2` count check)
+- [x] T013 [P] [US1] Update `canMergeAll` in `src/components/GameBoard.tsx` — same change as T012
 
 **Checkpoint**: Run `npm test` — all of T001–T010 should now pass. US1 is fully functional. Verify manually per `quickstart.md` subtraction scenario.
 
@@ -68,9 +68,9 @@ No new project structure, dependencies, or configuration required. All changes l
 
 ### Verification for User Story 2
 
-- [ ] T014 [US2] Run `npm test` and confirm T002, T003, T006, T008, T010 all pass — these are the division-specific tests written in Phase 2
-- [ ] T015 [US2] Manually verify division in browser per `quickstart.md` — generate 12, 3, 2 onto grid, switch to `÷`, click "Merge All Numbers", confirm result is `2`
-- [ ] T016 [US2] Manually verify division-by-zero edge case — generate 10 and 0 onto grid, switch to `÷`, click "Merge All Numbers", confirm result is `0` (not an error)
+- [x] T014 [US2] Run `npm test` and confirm T002, T003, T006, T008, T010 all pass — these are the division-specific tests written in Phase 2
+- [x] T015 [US2] Manually verify division in browser per `quickstart.md` — generate 12, 3, 2 onto grid, switch to `÷`, click "Merge All Numbers", confirm result is `2`
+- [x] T016 [US2] Manually verify division-by-zero edge case — generate 10 and 0 onto grid, switch to `÷`, click "Merge All Numbers", confirm result is `0` (not an error)
 
 **Checkpoint**: US2 is complete. Both subtraction and division work end-to-end.
 
@@ -84,8 +84,8 @@ No new project structure, dependencies, or configuration required. All changes l
 
 ### Verification for User Story 3
 
-- [ ] T017 [US3] Manually verify button state consistency per `quickstart.md` — with 2 numbers on the grid, cycle through `+`, `-`, `×`, `÷` and confirm "Merge All Numbers" is enabled for all four; then reduce to 1 number and confirm it's disabled for all four
-- [ ] T018 [US3] Run `npm test` and confirm no existing tests for `+` and `×` merge-all behavior regressed
+- [x] T017 [US3] Manually verify button state consistency per `quickstart.md` — with 2 numbers on the grid, cycle through `+`, `-`, `×`, `÷` and confirm "Merge All Numbers" is enabled for all four; then reduce to 1 number and confirm it's disabled for all four
+- [x] T018 [US3] Run `npm test` and confirm no existing tests for `+` and `×` merge-all behavior regressed
 
 **Checkpoint**: All three user stories are independently functional.
 
@@ -93,9 +93,9 @@ No new project structure, dependencies, or configuration required. All changes l
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T019 [P] Run `npm run test:coverage` and confirm unit test coverage remains ≥ 80% for all modules
-- [ ] T020 [P] Run `npm run lint` and confirm no ESLint errors introduced
-- [ ] T021 [P] Run `npm run typecheck` and confirm TypeScript reports no errors
+- [x] T019 [P] Run `npm run test:coverage` and confirm unit test coverage remains ≥ 80% for all modules
+- [x] T020 [P] Run `npm run lint` and confirm no ESLint errors introduced
+- [x] T021 [P] Run `npm run typecheck` and confirm TypeScript reports no errors
 
 ---
 

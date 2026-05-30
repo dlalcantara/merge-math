@@ -356,6 +356,69 @@ describe('MERGE_CELLS auto-accomplish', () => {
   })
 })
 
+describe('MERGE_ALL_NUMBERS with - and /', () => {
+  it('subtracts sequentially left-to-right', () => {
+    const store = makeStore({
+      numbersGrid: [10, 3, 2, null, null, null, null, null, null],
+      activeOperator: '-',
+    })
+    const next = gameReducer(store, { type: 'MERGE_ALL_NUMBERS' })
+    expect(next.current.numbersGrid[0]).toBe(5)
+    expect(next.current.numbersGrid.slice(1).every(v => v === null)).toBe(true)
+  })
+
+  it('divides sequentially left-to-right', () => {
+    const store = makeStore({
+      numbersGrid: [12, 3, 2, null, null, null, null, null, null],
+      activeOperator: '/',
+    })
+    const next = gameReducer(store, { type: 'MERGE_ALL_NUMBERS' })
+    expect(next.current.numbersGrid[0]).toBe(2)
+  })
+
+  it('division by zero yields 0', () => {
+    const store = makeStore({
+      numbersGrid: [10, 0, null, null, null, null, null, null, null],
+      activeOperator: '/',
+    })
+    const next = gameReducer(store, { type: 'MERGE_ALL_NUMBERS' })
+    expect(next.current.numbersGrid[0]).toBe(0)
+  })
+
+  it('MERGE_ALL_NUMBERS with - increments actionScore', () => {
+    const store = makeStore({
+      numbersGrid: [10, 3, null, null, null, null, null, null, null],
+      activeOperator: '-',
+    })
+    const next = gameReducer(store, { type: 'MERGE_ALL_NUMBERS' })
+    expect(next.current.actionScore).toBe(1)
+  })
+
+  it('MERGE_ALL_NUMBERS with - pushes to history and undo restores', () => {
+    const store = makeStore({
+      numbersGrid: [10, 3, null, null, null, null, null, null, null],
+      activeOperator: '-',
+    })
+    const merged = gameReducer(store, { type: 'MERGE_ALL_NUMBERS' })
+    expect(merged.history).toHaveLength(1)
+    const undone = gameReducer(merged, { type: 'UNDO' })
+    expect(undone.current.numbersGrid[0]).toBe(10)
+    expect(undone.current.numbersGrid[1]).toBe(3)
+  })
+
+  it('MERGE_ALL_NUMBERS with / pushes to history and undo restores', () => {
+    const store = makeStore({
+      numbersGrid: [12, 3, null, null, null, null, null, null, null],
+      activeOperator: '/',
+    })
+    const merged = gameReducer(store, { type: 'MERGE_ALL_NUMBERS' })
+    expect(merged.history).toHaveLength(1)
+    const undone = gameReducer(merged, { type: 'UNDO' })
+    expect(undone.current.numbersGrid[0]).toBe(12)
+    expect(undone.current.numbersGrid[1]).toBe(3)
+  })
+})
+
 describe('MERGE_ALL_NUMBERS auto-accomplish', () => {
   it('auto-accomplishes a target when merge-all result matches it', () => {
     // 1 + 1 + 0 (filtered) = sums to 2; but simpler: just 1 + 1 = 2, target 2 accomplishes

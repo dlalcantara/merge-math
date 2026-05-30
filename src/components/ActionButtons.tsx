@@ -7,10 +7,7 @@ interface ActionButtonsProps {
 }
 
 function canMergeAll(state: GameState): boolean {
-  return (
-    (state.activeOperator === '+' || state.activeOperator === '*') &&
-    state.numbersGrid.filter(v => v !== null).length >= 2
-  )
+  return state.numbersGrid.filter(v => v !== null).length >= 2
 }
 
 function canGenerateGenerator(state: GameState): boolean {

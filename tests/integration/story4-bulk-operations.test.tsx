@@ -53,20 +53,40 @@ describe('US4: Bulk Operations', () => {
     expect(within(numGrid).getByText('24')).toBeInTheDocument()
   })
 
-  it('Merge All button is disabled for operator -', async () => {
+  it('Merge All button is enabled for operator - with 2+ numbers', async () => {
     vi.spyOn(gameStateModule, 'generateInitialState').mockReturnValue(
       makeInitialState({ numbersGrid: [3, 5, null, null, null, null, null, null, null], activeOperator: '-' })
     )
     render(<GameBoard />)
-    expect(screen.getByRole('button', { name: /merge all numbers/i })).toBeDisabled()
+    expect(screen.getByRole('button', { name: /merge all numbers/i })).not.toBeDisabled()
   })
 
-  it('Merge All button is disabled for operator /', async () => {
+  it('Merge All button is enabled for operator / with 2+ numbers', async () => {
     vi.spyOn(gameStateModule, 'generateInitialState').mockReturnValue(
       makeInitialState({ numbersGrid: [3, 5, null, null, null, null, null, null, null], activeOperator: '/' })
     )
     render(<GameBoard />)
-    expect(screen.getByRole('button', { name: /merge all numbers/i })).toBeDisabled()
+    expect(screen.getByRole('button', { name: /merge all numbers/i })).not.toBeDisabled()
+  })
+
+  it('Merge All with - subtracts values left-to-right', async () => {
+    vi.spyOn(gameStateModule, 'generateInitialState').mockReturnValue(
+      makeInitialState({ numbersGrid: [10, 3, null, null, null, null, null, null, null], activeOperator: '-' })
+    )
+    render(<GameBoard />)
+    await userEvent.click(screen.getByRole('button', { name: /merge all numbers/i }))
+    const numGrid = screen.getByRole('grid', { name: /numbers grid/i })
+    expect(within(numGrid).getByText('7')).toBeInTheDocument()
+  })
+
+  it('Merge All with / divides values left-to-right', async () => {
+    vi.spyOn(gameStateModule, 'generateInitialState').mockReturnValue(
+      makeInitialState({ numbersGrid: [12, 3, null, null, null, null, null, null, null], activeOperator: '/' })
+    )
+    render(<GameBoard />)
+    await userEvent.click(screen.getByRole('button', { name: /merge all numbers/i }))
+    const numGrid = screen.getByRole('grid', { name: /numbers grid/i })
+    expect(within(numGrid).getByText('4')).toBeInTheDocument()
   })
 
   it('Merge All button is disabled with fewer than 2 numbers', async () => {
