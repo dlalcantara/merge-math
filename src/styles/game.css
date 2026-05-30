@@ -249,6 +249,95 @@ h2 {
   outline-offset: 2px;
 }
 
+/* Help modal */
+.help-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 20, 0.95);
+  border: 2px solid var(--color-selected);
+  border-radius: 16px;
+  color: #e0e0f0;
+  max-width: 420px;
+  width: min(92vw, 420px);
+  max-height: min(80vh, 600px);
+  margin: auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  text-align: left;
+}
+
+.help-modal::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.help-modal-content {
+  overflow-y: auto;
+  padding: 1.5rem 1.5rem 1rem;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.help-modal-content h2 {
+  font-size: 1.25rem;
+  color: var(--color-selected);
+  text-transform: none;
+  letter-spacing: normal;
+  margin: 0 0 0.75rem;
+}
+
+.help-modal-content h2 + p {
+  margin-top: 0;
+}
+
+.help-modal-content p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0 0 0.75rem;
+}
+
+.help-modal-content > h2:not(:first-child) {
+  margin-top: 1.25rem;
+}
+
+.help-modal-actions {
+  flex: 0 0 auto;
+  padding: 0.75rem 1.5rem 1.25rem;
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.help-modal-actions button {
+  background: var(--color-selected);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: var(--spacing-md) 1.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.help-modal-actions button:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+@media (max-width: 360px) {
+  .help-modal {
+    width: 96vw;
+    max-height: 92vh;
+  }
+  .help-modal-content {
+    padding: 1rem 1rem 0.75rem;
+  }
+  .help-modal-actions {
+    padding: 0.5rem 1rem 1rem;
+  }
+}
+
 /* Screen reader only utility */
 .sr-only {
   position: absolute;

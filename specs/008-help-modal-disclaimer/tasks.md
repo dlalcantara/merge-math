@@ -32,7 +32,7 @@ description: "Task list for feature 008-help-modal-disclaimer"
 
 **Purpose**: Create the directories and shared files both user stories will depend on.
 
-- [ ] T001 Create the new content directory at `src/content/` (no file yet; `mkdir -p src/content`).
+- [X] T001 Create the new content directory at `src/content/` (no file yet; `mkdir -p src/content`).
 
 ---
 
@@ -42,7 +42,7 @@ description: "Task list for feature 008-help-modal-disclaimer"
 
 **⚠️ CRITICAL**: No user story work may begin until this phase is complete.
 
-- [ ] T002 Create skeleton content module at `src/content/helpContent.ts` exporting four `string` constants — `helpIntroTitle`, `helpIntroBody`, `helpDisclaimerTitle`, `helpDisclaimerBody` — initialised to empty strings. Stories will fill the bodies. This guarantees the import surface is stable.
+- [X] T002 Create skeleton content module at `src/content/helpContent.ts` exporting four `string` constants — `helpIntroTitle`, `helpIntroBody`, `helpDisclaimerTitle`, `helpDisclaimerBody` — initialised to empty strings. Stories will fill the bodies. This guarantees the import surface is stable.
 
 **Checkpoint**: Both user stories can now begin against a stable content interface.
 
@@ -56,17 +56,17 @@ description: "Task list for feature 008-help-modal-disclaimer"
 
 ### Tests for User Story 1 (write FIRST, ensure they FAIL before implementation) ⚠️
 
-- [ ] T003 [P] [US1] Write failing unit tests for `HelpModal` in `tests/unit/components/HelpModal.test.tsx` covering: (a) renders with `role="dialog"` and `aria-modal="true"`, (b) is labelled by the intro heading via `aria-labelledby`, (c) close button has `aria-label="Close help"` and receives focus on open, (d) Escape key closes (invokes `onClose`), (e) clicking the backdrop closes, (f) Tab/Shift+Tab traps focus within the dialog, (g) intro heading and body render from `helpContent.ts` exports.
-- [ ] T004 [P] [US1] Extend `tests/unit/components/ScoreRow.test.tsx` with failing tests asserting: (a) a button with `aria-label="Help"` and visible text `?` is rendered inside `[data-testid="score-row"]`, (b) clicking that button opens an element with `role="dialog"`, (c) closing the dialog returns focus to the help button.
-- [ ] T005 [P] [US1] Create failing integration test at `tests/integration/story7-help-modal.test.tsx` covering US1 only: render `<App />` past the setup screen (use existing test helpers from `tests/integration/app-setup-to-game.test.tsx` as reference), find the help button, open the modal, assert the intro title and intro body text are visible, dismiss via the close button, then via Escape, then via backdrop click — each path returns focus to the help button. Include a sub-test that makes a game move before opening the modal and asserts the action score is unchanged after dismissal.
+- [X] T003 [P] [US1] Write failing unit tests for `HelpModal` in `tests/unit/components/HelpModal.test.tsx` covering: (a) renders with `role="dialog"` and `aria-modal="true"`, (b) is labelled by the intro heading via `aria-labelledby`, (c) close button has `aria-label="Close help"` and receives focus on open, (d) Escape key closes (invokes `onClose`), (e) clicking the backdrop closes, (f) Tab/Shift+Tab traps focus within the dialog, (g) intro heading and body render from `helpContent.ts` exports.
+- [X] T004 [P] [US1] Extend `tests/unit/components/ScoreRow.test.tsx` with failing tests asserting: (a) a button with `aria-label="Help"` and visible text `?` is rendered inside `[data-testid="score-row"]`, (b) clicking that button opens an element with `role="dialog"`, (c) closing the dialog returns focus to the help button.
+- [X] T005 [P] [US1] Create failing integration test at `tests/integration/story7-help-modal.test.tsx` covering US1 only: render `<App />` past the setup screen (use existing test helpers from `tests/integration/app-setup-to-game.test.tsx` as reference), find the help button, open the modal, assert the intro title and intro body text are visible, dismiss via the close button, then via Escape, then via backdrop click — each path returns focus to the help button. Include a sub-test that makes a game move before opening the modal and asserts the action score is unchanged after dismissal.
 
 ### Implementation for User Story 1
 
-- [ ] T006 [US1] Fill in `helpIntroTitle` and `helpIntroBody` in `src/content/helpContent.ts` with the casual-player introduction (80–150 words per SC-003). Body uses `\n\n` to separate paragraphs.
-- [ ] T007 [US1] Create `src/components/HelpModal.tsx` modelled on `src/components/WinModal.tsx`: a `<dialog ref aria-modal="true" aria-labelledby="help-modal-title" data-testid="help-modal" className="help-modal">` with `dialog.showModal()` in `useEffect`, focus moved to the close button on mount, Escape and backdrop-click both invoking the `onClose` prop, Tab/Shift+Tab focus trap. Render an `<h2 id="help-modal-title">{helpIntroTitle}</h2>` followed by `helpIntroBody` split into `<p>` elements. Render a single `<button aria-label="Close help" onClick={onClose}>Close</button>`. Props: `{ onClose: () => void }`.
-- [ ] T008 [US1] Modify `src/components/ScoreRow.tsx` to add a `useState<boolean>` named `isHelpOpen` (initial `false`), render a `<button aria-label="Help">?</button>` next to the existing Share/Undo buttons that sets `isHelpOpen` to `true`, and conditionally render `<HelpModal onClose={() => { setIsHelpOpen(false); helpButtonRef.current?.focus(); }} />`. Use a `useRef` on the help button so focus restoration works.
-- [ ] T009 [US1] Add `.help-modal` rules to `src/styles/game.css` mirroring the existing `.win-modal` and `.win-modal::backdrop` rules. Ensure `max-width` and inner `overflow: auto` keep the dialog usable at 320 px viewport width; keep the close button outside the scrollable region so it remains reachable on overflow.
-- [ ] T010 [US1] Run `npm test` and confirm all US1 tests from T003–T005 now pass. Run `npm run lint` and `npm run typecheck` and fix any issues.
+- [X] T006 [US1] Fill in `helpIntroTitle` and `helpIntroBody` in `src/content/helpContent.ts` with the casual-player introduction (80–150 words per SC-003). Body uses `\n\n` to separate paragraphs.
+- [X] T007 [US1] Create `src/components/HelpModal.tsx` modelled on `src/components/WinModal.tsx`: a `<dialog ref aria-modal="true" aria-labelledby="help-modal-title" data-testid="help-modal" className="help-modal">` with `dialog.showModal()` in `useEffect`, focus moved to the close button on mount, Escape and backdrop-click both invoking the `onClose` prop, Tab/Shift+Tab focus trap. Render an `<h2 id="help-modal-title">{helpIntroTitle}</h2>` followed by `helpIntroBody` split into `<p>` elements. Render a single `<button aria-label="Close help" onClick={onClose}>Close</button>`. Props: `{ onClose: () => void }`.
+- [X] T008 [US1] Modify `src/components/ScoreRow.tsx` to add a `useState<boolean>` named `isHelpOpen` (initial `false`), render a `<button aria-label="Help">?</button>` next to the existing Share/Undo buttons that sets `isHelpOpen` to `true`, and conditionally render `<HelpModal onClose={() => { setIsHelpOpen(false); helpButtonRef.current?.focus(); }} />`. Use a `useRef` on the help button so focus restoration works.
+- [X] T009 [US1] Add `.help-modal` rules to `src/styles/game.css` mirroring the existing `.win-modal` and `.win-modal::backdrop` rules. Ensure `max-width` and inner `overflow: auto` keep the dialog usable at 320 px viewport width; keep the close button outside the scrollable region so it remains reachable on overflow.
+- [X] T010 [US1] Run `npm test` and confirm all US1 tests from T003–T005 now pass. Run `npm run lint` and `npm run typecheck` and fix any issues.
 
 **Checkpoint**: US1 is fully functional. The `?` button opens a modal showing the "How to Play" intro, dismissible three ways, with game state preserved. This is the MVP.
 
@@ -80,14 +80,14 @@ description: "Task list for feature 008-help-modal-disclaimer"
 
 ### Tests for User Story 2 (write FIRST, ensure they FAIL before implementation) ⚠️
 
-- [ ] T011 [P] [US2] Extend `tests/unit/components/HelpModal.test.tsx` with failing tests asserting that the dialog renders the disclaimer heading (`helpDisclaimerTitle`) and disclaimer body (`helpDisclaimerBody`), and that the body text matches `/claude/i`, `/programming/i`, `/original/i`, and `/no .* (ai|art) assets?/i` (or equivalent case-insensitive checks for "no AI-generated art assets").
-- [ ] T012 [P] [US2] Add a US2 block to `tests/integration/story7-help-modal.test.tsx`: after opening the help modal (reusing the helper from T005), assert that the disclaimer heading and a snippet of disclaimer body text are both visible in the same `getByRole('dialog')` subtree — no further click required.
+- [X] T011 [P] [US2] Extend `tests/unit/components/HelpModal.test.tsx` with failing tests asserting that the dialog renders the disclaimer heading (`helpDisclaimerTitle`) and disclaimer body (`helpDisclaimerBody`), and that the body text matches `/claude/i`, `/programming/i`, `/original/i`, and `/no .* (ai|art) assets?/i` (or equivalent case-insensitive checks for "no AI-generated art assets").
+- [X] T012 [P] [US2] Add a US2 block to `tests/integration/story7-help-modal.test.tsx`: after opening the help modal (reusing the helper from T005), assert that the disclaimer heading and a snippet of disclaimer body text are both visible in the same `getByRole('dialog')` subtree — no further click required.
 
 ### Implementation for User Story 2
 
-- [ ] T013 [US2] Fill in `helpDisclaimerTitle` (≤ 30 chars, e.g. "AI & Attribution") and `helpDisclaimerBody` (one short paragraph, ≤ 60 words) in `src/content/helpContent.ts`. The body MUST mention: (a) Claude was used only for programming, (b) the design is original, (c) no AI-generated art assets were used.
-- [ ] T014 [US2] Update `src/components/HelpModal.tsx` to render the disclaimer section below the intro: an `<h2>{helpDisclaimerTitle}</h2>` followed by `<p>{helpDisclaimerBody}</p>`. Keep the close button as the last element in the dialog so it remains the last focusable item in the trap.
-- [ ] T015 [US2] Run `npm test` and confirm all US2 tests from T011–T012 now pass alongside the existing US1 tests. Run `npm run lint` and `npm run typecheck` and fix any issues.
+- [X] T013 [US2] Fill in `helpDisclaimerTitle` (≤ 30 chars, e.g. "AI & Attribution") and `helpDisclaimerBody` (one short paragraph, ≤ 60 words) in `src/content/helpContent.ts`. The body MUST mention: (a) Claude was used only for programming, (b) the design is original, (c) no AI-generated art assets were used.
+- [X] T014 [US2] Update `src/components/HelpModal.tsx` to render the disclaimer section below the intro: an `<h2>{helpDisclaimerTitle}</h2>` followed by `<p>{helpDisclaimerBody}</p>`. Keep the close button as the last element in the dialog so it remains the last focusable item in the trap.
+- [X] T015 [US2] Run `npm test` and confirm all US2 tests from T011–T012 now pass alongside the existing US1 tests. Run `npm run lint` and `npm run typecheck` and fix any issues.
 
 **Checkpoint**: US1 + US2 both work. One modal, two clearly labelled sections, single view.
 
@@ -97,10 +97,10 @@ description: "Task list for feature 008-help-modal-disclaimer"
 
 **Purpose**: Verify constitutional gates, accessibility, mobile, and full build before declaring the feature done.
 
-- [ ] T016 Run `npm run test:coverage` and confirm overall coverage remains ≥ 80% (constitution Principle II). If any new file is under 80%, add targeted unit tests until it reaches the threshold.
-- [ ] T017 Run the manual verification checklist from `specs/008-help-modal-disclaimer/quickstart.md` end-to-end in `npm run dev`. Specifically confirm steps 11 (320 px viewport — no horizontal scroll, close button reachable on overflow) and 12 (screen-reader announces the dialog with its title). Note any failures and file fixes in the same branch.
-- [ ] T018 Run `npm run lint`, `npm run typecheck`, and `npm run build` from the repo root. All three must succeed with no errors.
-- [ ] T019 Audit `package.json` to confirm no new runtime or devDependencies were added by this feature (plan.md constraint).
+- [X] T016 Run `npm run test:coverage` and confirm overall coverage remains ≥ 80% (constitution Principle II). If any new file is under 80%, add targeted unit tests until it reaches the threshold.
+- [X] T017 Run the manual verification checklist from `specs/008-help-modal-disclaimer/quickstart.md` end-to-end in `npm run dev`. Specifically confirm steps 11 (320 px viewport — no horizontal scroll, close button reachable on overflow) and 12 (screen-reader announces the dialog with its title). Note any failures and file fixes in the same branch.
+- [X] T018 Run `npm run lint`, `npm run typecheck`, and `npm run build` from the repo root. All three must succeed with no errors.
+- [X] T019 Audit `package.json` to confirm no new runtime or devDependencies were added by this feature (plan.md constraint).
 
 ---
 

@@ -40,6 +40,37 @@ describe('ScoreRow — share button', () => {
   })
 })
 
+describe('ScoreRow — help button', () => {
+  it('renders a help button with accessible label inside score-row', () => {
+    render(<ScoreRow score={0} onUndo={vi.fn()} undoDisabled={false} />)
+    const help = screen.getByRole('button', { name: /^help$/i })
+    expect(help).toBeInTheDocument()
+    expect(help.closest('[data-testid="score-row"]')).not.toBeNull()
+  })
+
+  it('displays a "?" glyph on the help button', () => {
+    render(<ScoreRow score={0} onUndo={vi.fn()} undoDisabled={false} />)
+    const help = screen.getByRole('button', { name: /^help$/i })
+    expect(help.textContent).toContain('?')
+  })
+
+  it('opens the help dialog when the help button is clicked', async () => {
+    render(<ScoreRow score={0} onUndo={vi.fn()} undoDisabled={false} />)
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: /^help$/i }))
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+  })
+
+  it('restores focus to the help button when the dialog closes', async () => {
+    render(<ScoreRow score={0} onUndo={vi.fn()} undoDisabled={false} />)
+    const help = screen.getByRole('button', { name: /^help$/i })
+    await userEvent.click(help)
+    await userEvent.click(screen.getByRole('button', { name: /close help/i }))
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(document.activeElement).toBe(help)
+  })
+})
+
 describe('ScoreRow', () => {
   it('renders the action score value', () => {
     render(<ScoreRow score={42} onUndo={vi.fn()} undoDisabled={false} />)

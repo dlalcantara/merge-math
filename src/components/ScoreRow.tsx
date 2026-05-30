@@ -1,3 +1,6 @@
+import { useEffect, useRef, useState } from 'react'
+import { HelpModal } from './HelpModal'
+
 interface ScoreRowProps {
   score: number
   onUndo: () => void
@@ -8,6 +11,17 @@ interface ScoreRowProps {
 }
 
 export function ScoreRow({ score, onUndo, undoDisabled, onShare, copyState = 'idle', fallbackUrl = null }: ScoreRowProps) {
+  const [isHelpOpen, setIsHelpOpen] = useState(false)
+  const helpButtonRef = useRef<HTMLButtonElement>(null)
+  const prevOpenRef = useRef(false)
+
+  useEffect(() => {
+    if (prevOpenRef.current && !isHelpOpen) {
+      helpButtonRef.current?.focus()
+    }
+    prevOpenRef.current = isHelpOpen
+  }, [isHelpOpen])
+
   return (
     <div
       data-testid="score-row"
@@ -27,6 +41,14 @@ export function ScoreRow({ score, onUndo, undoDisabled, onShare, copyState = 'id
             style={{ width: '16rem', fontSize: '0.75rem' }}
           />
         )}
+        <button
+          ref={helpButtonRef}
+          type="button"
+          aria-label="Help"
+          onClick={() => setIsHelpOpen(true)}
+        >
+          ?
+        </button>
         <button aria-label="Share" onClick={onShare}>
           &#x1F517;
         </button>
@@ -34,6 +56,7 @@ export function ScoreRow({ score, onUndo, undoDisabled, onShare, copyState = 'id
           Undo
         </button>
       </div>
+      {isHelpOpen && <HelpModal onClose={() => setIsHelpOpen(false)} />}
     </div>
   )
 }
